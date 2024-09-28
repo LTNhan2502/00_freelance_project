@@ -1,0 +1,2 @@
+Đây là file home
+Chứa các thiết lập về trang Home

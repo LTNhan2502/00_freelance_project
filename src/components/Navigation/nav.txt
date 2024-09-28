@@ -1,0 +1,2 @@
+Đây là file nav
+Chứa các thiết lập về thanh điều hướng
