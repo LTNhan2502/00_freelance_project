@@ -2,18 +2,14 @@ import React from "react";
 import "./App.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Nav from "../components/Navigation/Nav";
-import { Outlet } from "react-router-dom";
+import Profiles from './Profiles/Profiles';
 
 class App extends React.Component {
   render() {
     return (
       <>
-        <div className="navigation">
-          <Nav/>
-        </div>
-        <div className="content">
-          <Outlet/>
+        <div>
+          <Profiles/>
         </div>
 
         {/* Toastify dùng để hiển thị thông báo */}
