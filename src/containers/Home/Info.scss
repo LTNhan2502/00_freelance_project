@@ -1,0 +1,33 @@
+.blur-card {
+    background-color: transparent !important;
+    backdrop-filter: blur(6px) !important;
+    color: white !important;
+    border: 1px solid #dbdfe4 !important;
+    flex: 1; // Đảm bảo mỗi card chiếm không gian đều
+}
+
+.font-medium{
+    font-weight: 700;
+
+    .box {
+        background-color: transparent;
+        backdrop-filter: blur(6px);
+        padding: 7px;
+        margin-bottom: 15px;
+        border: 1px solid #dbdfe4;
+        border-radius: 13px;
+        color: white;
+        text-align: center;
+        font-size: 0.8rem;
+    
+        .p{
+            padding-left: 10px;
+        }
+    }
+
+    .box-click{
+        cursor: pointer;
+    }
+}
+  
+  

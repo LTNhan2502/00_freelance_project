@@ -1,0 +1,2 @@
+Đây là file routes component
+Chứa các route, router
