@@ -4,6 +4,13 @@
 /node_modules
 /.pnp
 .pnp.js
+src/containers/App.js
+src/containers/Auth/Login.js
+src/containers/Auth/Login.scss
+src/containers/Auth/Register.js
+src/containers/Auth/Register.scss
+src/index.js
+
 
 # testing
 /coverage
