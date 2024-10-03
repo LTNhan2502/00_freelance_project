@@ -3,13 +3,15 @@ import "./App.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Home from './Home/Home';
+
+
 class App extends React.Component {
   render() {
     return (
       <>
-        <div>
-          This is main_v0.1
-        </div>
+
+        <Home/>
 
         {/* Toastify dùng để hiển thị thông báo */}
         <ToastContainer
