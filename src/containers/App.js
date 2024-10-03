@@ -8,7 +8,7 @@ class App extends React.Component {
     return (
       <>
         <div>
-          This is main
+          This is main_v0.1
         </div>
 
         {/* Toastify dùng để hiển thị thông báo */}
