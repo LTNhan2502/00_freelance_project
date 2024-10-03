@@ -5,6 +5,7 @@ import './styles/global.scss';
 import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Home from './containers/Home/Home';
 import Login from './containers/Auth/Login';
 import Register from './containers/Auth/Register';
 
@@ -14,6 +15,7 @@ root.render(
     <BrowserRouter>      
       <Routes>
         <Route path="/" element={<App />} >
+          <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
