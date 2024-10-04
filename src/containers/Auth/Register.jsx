@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock, faPhone } from "@fortawesome/free-solid-svg-icons";
@@ -63,7 +64,7 @@ const Register = () => {
         {/* Start form */}
         <form onSubmit={formik.handleSubmit}>
           {/* Start username input */}
-          <div className="input-group">
+          <div className="_input-group">
             <div className="input-container">
               <span className="icon">
                 <FontAwesomeIcon icon={faUser} />
@@ -85,7 +86,7 @@ const Register = () => {
           {/* End username input */}
 
           {/* Start phone number input */}
-          <div className="input-group">
+          <div className="_input-group">
             <div className="input-container">
               <span className="icon">
                 <FontAwesomeIcon icon={faPhone} />
@@ -107,7 +108,7 @@ const Register = () => {
           {/* End phone number input */}
 
           {/* Start password input */}
-          <div className="input-group">
+          <div className="_input-group">
             <div className="input-container">
               <span className="icon">
                 <FontAwesomeIcon icon={faLock} />
@@ -134,7 +135,7 @@ const Register = () => {
           {/* End password input */}
 
           {/* Start retype password input */}
-          <div className="input-group">
+          <div className="_input-group">
             <div className="input-container">
               <span className="icon">
                 <FontAwesomeIcon icon={faLock} />
@@ -161,7 +162,7 @@ const Register = () => {
           {/* End retype password input */}
 
           {/* Start code input */}
-          <div className="input-group">
+          <div className="_input-group">
             <div className="input-container">
               <span className="icon">
                 <FontAwesomeIcon icon={faBookmark} />
@@ -185,7 +186,7 @@ const Register = () => {
           {/* Start Register navigator */}
           <div className="register-navigator">
             <div>
-              Đã có tài khoản? <span className="register">Đăng nhập</span>
+              Đã có tài khoản? <Link to="/login" className="register">Đăng nhập</Link>
             </div>
           </div>
           {/* End Register navigator */}

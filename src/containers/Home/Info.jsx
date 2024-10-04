@@ -55,13 +55,6 @@ class Info extends React.Component{
                         </div>
                     </Col>
                 </Row>
-
-                {/* Video */}
-                <Row>
-                    <video width="100%" controls autoPlay loop muted>
-                        <source src={videoSrc} type="video/mp4" />
-                    </video>
-                </Row>
             </Container>
         )
     }

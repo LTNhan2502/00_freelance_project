@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card } from 'react-bootstrap';
 import axios from 'axios';
+import Video from './Video';
 
 export default function Recipients() {
     const [recipients, setRecipients] = useState([]);
@@ -24,7 +25,7 @@ export default function Recipients() {
       }, [recipients]);
 
     return (
-        <Card className="h-100 blur-card me-lg-3 mb-3 mb-lg-0">
+        <Card className="h-100 blur-card ms-lg-3 mb-3 mb-lg-0">
             <Card.Body>
                 <Card.Title>Người dùng trúng thưởng</Card.Title>
                 <div>

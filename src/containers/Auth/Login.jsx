@@ -1,9 +1,10 @@
 import React from "react";
-import "./Login.scss";
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import "./Login.scss";
 
 class Login extends React.Component {
   state = {
@@ -87,7 +88,7 @@ class Login extends React.Component {
           {/* Start form */}
           <form>
             {/* Start username input */}
-            <div className="input-group">
+            <div className="_input-group">
               <div className="input-container">
                 <span className="icon">
                   <FontAwesomeIcon icon={faUser} />
@@ -106,7 +107,7 @@ class Login extends React.Component {
             {/* End username input */}
 
             {/* Start password input */}
-            <div className="input-group">
+            <div className="_input-group">
               <div className="input-container">
                 <span className="icon">
                   <FontAwesomeIcon icon={faLock} />
@@ -134,7 +135,7 @@ class Login extends React.Component {
             {/* Start Register navigator */}
             <div className="register-navigator">
               <div>
-                Chưa có tài khoản? <span className="register">Đăng ký</span>
+                Chưa có tài khoản? <Link to="/register" className="register">Đăng ký</Link>
               </div>
             </div>
             {/* End Register navigator */}

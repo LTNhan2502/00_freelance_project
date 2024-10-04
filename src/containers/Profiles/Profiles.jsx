@@ -24,7 +24,7 @@ export default function UserInfo() {
 
                 {/* Card Info */}
                 <Collapse in={open}>
-                    <Card className="mt-3 blur-card">
+                    <Card className="mt-3 blur-card-profiles">
                         <Card.Body>
                             <ul className="list-unstyled">
                                 <li className='py-3 px-3'>
