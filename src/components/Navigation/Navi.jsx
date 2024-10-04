@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import "./Nav.scss";
+import "./Navi.scss";
 import Profiles from '../../containers/Profiles/Profiles';
 
-class Nav extends React.Component {
+class Navi extends React.Component {
   render() {
     return (
         <div className="topnav">
@@ -11,10 +11,12 @@ class Nav extends React.Component {
             <NavLink to="/home">Home</NavLink>
             <NavLink to="/login">Login</NavLink>
             <NavLink to="/register">Register</NavLink>
-            {/* <Profiles/> */}
+            <div>
+              <Profiles/>
+            </div>
         </div>
     );
   }
 }
 
-export default Nav;
+export default Navi;
