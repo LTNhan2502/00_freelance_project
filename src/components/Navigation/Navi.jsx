@@ -18,6 +18,7 @@ class Navi extends React.Component {
   }
 
   render() {
+    let isAuthenticated = !!localStorage.getItem("access_token");
     return (
       <div className="topnav">
         <div className="text-white p-2">
@@ -28,7 +29,7 @@ class Navi extends React.Component {
         <NavLink to="/register">Register</NavLink>
 
         {/* Avatar Container */}
-        <div className="profiles-container">
+        <div className={`profiles-container ${isAuthenticated ? '' : 'd-none'}`}>
           <Button onClick={this.toggleCard} className="avatar-btn">
             <img src={avatar} alt="Avatar" className="avatar-img" />
           </Button>

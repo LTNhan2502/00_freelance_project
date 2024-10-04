@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
@@ -7,169 +7,127 @@ import { toast } from "react-toastify";
 import "./Login.scss";
 import { loginUser } from "../../utils/userAPI";
 
-class Login extends React.Component {
-  state = {
-    // users là dữ liệu lấy từ api
-    user: [{ id: 1, username: "trongnhan000", password: "123123" }],
-    // username, password là dữ liệu nhập vào
-    username: "",
-    password: "",
-    errors: {
-      username: "",
-      password: "",
-    },
-    isShowPassword: false,
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ username: "", password: "" });
+  const [isShowPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  // Ẩn hoặc hiện mật khẩu đã nhập
+  const onShowOrHide = () => {
+    setShowPassword(!isShowPassword);
   };
 
-  //Làm input username có thể nhập liệu
-  onChangeUsername = (e) => {
-    this.setState({
-      username: e.target.value,
-    });
-  };
-
-  //Làm input password có thể nhập liệu
-  onChangePassword = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
-  };
-
-  //Ẩn hoặc hiện mật khẩu đã nhập
-  onShowOrHide = () => {
-    this.setState({
-      isShowPassword: !this.state.isShowPassword,
-    });
-  };
-
-  //Kiểm tra điều kiện form
-  validateForm = () => {
-    const { username, password, errors } = this.state;
-
+  // Kiểm tra điều kiện form
+  const validateForm = () => {
     let valid = true;
+    let newErrors = { username: "", password: "" };
 
     if (username.trim() === "") {
-      errors.username = "Tên đăng nhập không được để trống";
+      newErrors.username = "Tên đăng nhập không được để trống";
       valid = false;
     }
     if (password.trim() === "") {
-      errors.password = "Mật khẩu không được để trống";
+      newErrors.password = "Mật khẩu không được để trống";
       valid = false;
     }
 
-    this.setState({ errors });
+    setErrors(newErrors);
     return valid;
   };
 
-  //Submit form
-  onSubmitForm = async (e) => {
+  // Submit form
+  const onSubmitForm = async (e) => {
     e.preventDefault();
 
-    if (this.validateForm()) {
-      // Lấy data từ form
-      // console.log(">>Check data login: ", this.state);
-      // console.log(">>Check data username: ", this.state.password);
-
-      let loginAPI = await loginUser(this.state.username, this.state.password) 
-      console.log(loginAPI.data);
-
-      if(loginAPI && loginAPI.data.EC === 0) {
-        // Đăng nhập thành công
-        localStorage.setItem("access_token", loginAPI.data.access_token)
-        // console.log(access_token);
-
-        // Cho vào trang home
-        
-      }else {
-        // Đăng nhập không thành công 
+    if (validateForm()) {
+      try {
+        let loginAPI = await loginUser(username, password);
         console.log(loginAPI.data);
-      }
-      
-      
-      this.setState({
-        errors: {
-          username: "",
-          password: "",
-        },
-      });
 
-      toast.success("Đăng nhập thành công!");
+        if (loginAPI && loginAPI.data.EC === 0) {
+          // Đăng nhập thành công
+          localStorage.setItem("access_token", loginAPI.data.access_token);
+          toast.success("Đăng nhập thành công!");
+
+          // Chuyển hướng về trang home
+          navigate("/home");
+        } else {
+          // Đăng nhập không thành công 
+          toast.error(loginAPI.data.message || "Đăng nhập không thành công");
+        }
+
+      } catch (error) {
+        console.error(error);
+        toast.error("Đã xảy ra lỗi trong quá trình đăng nhập.");
+      }
     }
   };
 
-  render() {
-    let { username, password, errors } = this.state;
-    return (
-      <>
-        <div className="login-container">
-          <div className="login-title">Đăng nhập vào website</div>
-          {/* Start form */}
-          <form>
-            {/* Start username input */}
-            <div className="_input-group">
-              <div className="input-container">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faUser} />
-                </span>
-                <input
-                  type="text"
-                  placeholder="Nhập tên đăng nhập"
-                  value={username}
-                  onChange={(e) => this.onChangeUsername(e)}
-                />
-              </div>
-              <small className={errors.username ? "visible" : ""}>
-                {errors.username}
-              </small>
-            </div>
-            {/* End username input */}
-
-            {/* Start password input */}
-            <div className="_input-group">
-              <div className="input-container">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faLock} />
-                </span>
-                <input
-                  type={
-                    this.state.isShowPassword === false ? "password" : "text"
-                  }
-                  placeholder="Nhập mật khẩu"
-                  value={password}
-                  onChange={(e) => {
-                    this.onChangePassword(e);
-                  }}
-                />
-                <span className="eye-icon" onClick={() => this.onShowOrHide()}>
-                  <FontAwesomeIcon icon={faEye} />
-                </span>
-              </div>
-              <small className={errors.password ? "visible" : ""}>
-                {errors.password}
-              </small>
-            </div>
-            {/* End password input */}
-
-            {/* Start Register navigator */}
-            <div className="register-navigator">
-              <div>
-                Chưa có tài khoản? <Link to="/register" className="register">Đăng ký</Link>
-              </div>
-            </div>
-            {/* End Register navigator */}
-
+  return (
+    <div className="login-container">
+      <div className="login-title">Đăng nhập vào website</div>
+      {/* Start form */}
+      <form onSubmit={onSubmitForm}>
+        {/* Start username input */}
+        <div className="_input-group">
+          <div className="input-container">
+            <span className="icon">
+              <FontAwesomeIcon icon={faUser} />
+            </span>
             <input
-              className="btn-login"
-              type="submit"
-              value="ĐĂNG NHẬP"
-              onClick={(e) => this.onSubmitForm(e)}
+              type="text"
+              placeholder="Nhập tên đăng nhập"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-          </form>
-          {/* End form */}
+          </div>
+          <small className={errors.username ? "visible" : ""}>
+            {errors.username}
+          </small>
         </div>
-      </>
-    );
-  }
+        {/* End username input */}
+
+        {/* Start password input */}
+        <div className="_input-group">
+          <div className="input-container">
+            <span className="icon">
+              <FontAwesomeIcon icon={faLock} />
+            </span>
+            <input
+              type={isShowPassword ? "text" : "password"}
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <span className="eye-icon" onClick={onShowOrHide}>
+              <FontAwesomeIcon icon={faEye} />
+            </span>
+          </div>
+          <small className={errors.password ? "visible" : ""}>
+            {errors.password}
+          </small>
+        </div>
+        {/* End password input */}
+
+        {/* Start Register navigator */}
+        <div className="register-navigator">
+          <div>
+            Chưa có tài khoản? <Link to="/register" className="register">Đăng ký</Link>
+          </div>
+        </div>
+        {/* End Register navigator */}
+
+        <input
+          className="btn-login"
+          type="submit"
+          value="ĐĂNG NHẬP"
+        />
+      </form>
+      {/* End form */}
+    </div>
+  );
 }
 
 export default Login;
