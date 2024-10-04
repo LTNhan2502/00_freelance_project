@@ -12,11 +12,11 @@ export default function Recipients() {
 
     useEffect(() => {
         fetchRecipients();
-        const fetchInterval = setInterval(() => {
-            fetchRecipients();
-        }, 3000)
+        // const fetchInterval = setInterval(() => {
+        //     fetchRecipients();
+        // }, 200000)
 
-        return () => clearInterval(fetchInterval);
+        // return () => clearInterval(fetchInterval);
     }, []);
 
     useEffect(() => {

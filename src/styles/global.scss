@@ -5,13 +5,31 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  overflow: hidden;
-  background-size: 100% 100%;
-  background-image: url('../assets/blur-rain-01.webp');
-  background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ vùng nền */
-  background-position: center; /* Đảm bảo hình ảnh luôn ở trung tâm */
-  background-repeat: no-repeat;
+  
+  .main-container{
+    position: relative;
+    min-height: 100vh; /* Đảm bảo nội dung chiếm toàn bộ chiều cao */
+    overflow: hidden;
+    z-index: 1;  
+    
+    .content-container{
+      min-height: calc(var(--vh, 1vh) * 100) !important;
+      overflow: hidden;
+    }
+  }
+  .main-container-image{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/blur-rain-01.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat;
+    z-index: -1;       
+  }
 }
 
 code {

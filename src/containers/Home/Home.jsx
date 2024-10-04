@@ -7,7 +7,7 @@ import './Home.scss';
 
 const Home = () => {
   return (
-    <Container className="custom-container">
+    <Container className="custom-container py-5">
       <Row className="my-4 justify-content-center">
         <Col lg={4} md={6} xs={12} className="mb-4">
           {/* Info */}
