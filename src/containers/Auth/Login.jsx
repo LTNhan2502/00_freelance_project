@@ -5,6 +5,7 @@ import { faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "./Login.scss";
+import { loginUser } from "../../utils/userAPI";
 
 class Login extends React.Component {
   state = {
@@ -61,12 +62,29 @@ class Login extends React.Component {
   };
 
   //Submit form
-  onSubmitForm = (e) => {
+  onSubmitForm = async (e) => {
     e.preventDefault();
 
     if (this.validateForm()) {
       // Lấy data từ form
-      console.log(">>Check data login: ", this.state);
+      // console.log(">>Check data login: ", this.state);
+      // console.log(">>Check data username: ", this.state.password);
+
+      let loginAPI = await loginUser(this.state.username, this.state.password) 
+      console.log(loginAPI.data);
+
+      if(loginAPI && loginAPI.data.EC === 0) {
+        // Đăng nhập thành công
+        localStorage.setItem("access_token", loginAPI.data.access_token)
+        // console.log(access_token);
+
+        // Cho vào trang home
+        
+      }else {
+        // Đăng nhập không thành công 
+        console.log(loginAPI.data);
+      }
+      
       
       this.setState({
         errors: {

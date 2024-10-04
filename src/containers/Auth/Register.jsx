@@ -5,58 +5,71 @@ import { faBookmark, faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import "./Register.scss";
+import { registerUser } from "../../utils/userAPI";
 
 const Register = () => {
-  const [isShowPass, setShowOrHidePass] = useState(false)
-  const [isShowRePass, setShowOrHideRePass] = useState(false)
+  const [isShowPass, setShowOrHidePass] = useState(false);
+  const [isShowRePass, setShowOrHideRePass] = useState(false);
   const formik = useFormik({
     initialValues: {
-      username: '',
-      phoneNumber: '',
-      password: '',
-      retypePassword: '',
-      code: '',
+      username: "",
+      phoneNumber: "",
+      password: "",
+      retypePassword: "",
+      code: "",
     },
 
     validationSchema: Yup.object({
       username: Yup.string()
-        .matches(/^[a-zA-Z0-9]*$/, 'Không được chứa ký tự đặc biệt')
-        .min(6, 'Username phải có ít nhất 6 kí tự')
-        .max(25, 'Username không được quá 25 ký tự')
-        .required('Không được để trống'),
+        .matches(/^[a-zA-Z0-9]*$/, "Không được chứa ký tự đặc biệt")
+        .min(6, "Username phải có ít nhất 6 kí tự")
+        .max(25, "Username không được quá 25 ký tự")
+        .required("Không được để trống"),
       phoneNumber: Yup.string()
-        .matches(/^0\d{1,9}$/, 'Số điện thoại không hợp lệ')
-        .required('Không được để trống'),
+        .matches(/^0\d{1,9}$/, "Số điện thoại không hợp lệ")
+        .required("Không được để trống"),
       password: Yup.string()
-        .min(6, 'Mật khẩu của bạn quá ngắn')
-        .required('Không được để trống'),
+        .min(6, "Mật khẩu của bạn quá ngắn")
+        .required("Không được để trống"),
       retypePassword: Yup.string()
-        .oneOf([Yup.ref('password')], 'Mật khẩu không trùng khớp')
-        .required('Không được để trống'),
-      code: Yup.string()
-        .required('Không được để trống')
+        .oneOf([Yup.ref("password")], "Mật khẩu không trùng khớp")
+        .required("Không được để trống"),
+      code: Yup.string().required("Không được để trống"),
     }),
 
     // Gửi submit về server
-    onSubmit: values => {
-      console.log(">>Check values validate: ", values);
-      
-    }
-  })
+    onSubmit: async (values) => {
+      const registerAPI = await registerUser(
+        values.username,
+        values.phoneNumber,
+        values.password,
+        values.code
+      );
+
+      // Xem dữ liệu ở đây
+      console.log(registerAPI);
+
+      // Chỗ này ông thêm điều kiện như tài khoản đã tồn tại, sđt tồn tại, không tồn tại mã giới thiệu
+      // if(registerAPI && registerAPI.EC === 0) {
+      //   // Cho nó chuyển vào trang login
+      // }else {
+      //   console.log(registerAPI.data);
+      // }
+    },
+  });
 
   //Ẩn hoặc hiện mật khẩu
-  const onShowOrHidePass = () => {    
-    setShowOrHidePass(prevState => !prevState)   
+  const onShowOrHidePass = () => {
+    setShowOrHidePass((prevState) => !prevState);
   };
 
   //Ẩn hoặc hiện nhập lại mật khẩu
-  const onShowOrHideRePass = () => {    
-    setShowOrHideRePass(prevState => !prevState)   
+  const onShowOrHideRePass = () => {
+    setShowOrHideRePass((prevState) => !prevState);
   };
 
-  
   return (
     <>
       <div className="login-container">
@@ -77,11 +90,11 @@ const Register = () => {
                 onChange={formik.handleChange}
               />
             </div>
-            {formik.touched.username && formik.errors.username ? 
-              (<small className="error">{formik.errors.username}</small>) 
-              : 
-              (<small>&nbsp;</small>)
-            }
+            {formik.touched.username && formik.errors.username ? (
+              <small className="error">{formik.errors.username}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
           </div>
           {/* End username input */}
 
@@ -99,11 +112,11 @@ const Register = () => {
                 onChange={formik.handleChange}
               />
             </div>
-            {formik.touched.phoneNumber && formik.errors.phoneNumber ? 
-              (<small className="error">{formik.errors.phoneNumber}</small>) 
-              : 
-              (<small>&nbsp;</small>)
-            }
+            {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+              <small className="error">{formik.errors.phoneNumber}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
           </div>
           {/* End phone number input */}
 
@@ -114,9 +127,7 @@ const Register = () => {
                 <FontAwesomeIcon icon={faLock} />
               </span>
               <input
-                type={
-                  isShowPass === false ? "password" : "text"
-                }
+                type={isShowPass === false ? "password" : "text"}
                 name="password"
                 placeholder="Nhập mật khẩu"
                 value={formik.values.password}
@@ -126,11 +137,11 @@ const Register = () => {
                 <FontAwesomeIcon icon={faEye} />
               </span>
             </div>
-            {formik.touched.password && formik.errors.password ? 
-              (<small className="error">{formik.errors.password}</small>) 
-              : 
-              (<small>&nbsp;</small>)
-            }
+            {formik.touched.password && formik.errors.password ? (
+              <small className="error">{formik.errors.password}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
           </div>
           {/* End password input */}
 
@@ -141,9 +152,7 @@ const Register = () => {
                 <FontAwesomeIcon icon={faLock} />
               </span>
               <input
-                type={
-                  isShowRePass === false ? "password" : "text"
-                }
+                type={isShowRePass === false ? "password" : "text"}
                 name="retypePassword"
                 placeholder="Nhập lại mật khẩu"
                 value={formik.values.retypePassword}
@@ -153,11 +162,11 @@ const Register = () => {
                 <FontAwesomeIcon icon={faEye} />
               </span>
             </div>
-            {formik.touched.retypePassword && formik.errors.retypePassword ? 
-              (<small className="error">{formik.errors.retypePassword}</small>) 
-              : 
-              (<small>&nbsp;</small>)
-            }
+            {formik.touched.retypePassword && formik.errors.retypePassword ? (
+              <small className="error">{formik.errors.retypePassword}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
           </div>
           {/* End retype password input */}
 
@@ -173,35 +182,33 @@ const Register = () => {
                 placeholder="Nhập mã mời"
                 value={formik.values.code}
                 onChange={formik.handleChange}
-              />              
+              />
             </div>
-            {formik.touched.code && formik.errors.code ? 
-              (<small className="error">{formik.errors.code}</small>) 
-              : 
-              (<small>&nbsp;</small>)
-            }
+            {formik.touched.code && formik.errors.code ? (
+              <small className="error">{formik.errors.code}</small>
+            ) : (
+              <small>&nbsp;</small>
+            )}
           </div>
           {/* End code input */}
 
           {/* Start Register navigator */}
           <div className="register-navigator">
             <div>
-              Đã có tài khoản? <Link to="/login" className="register">Đăng nhập</Link>
+              Đã có tài khoản?{" "}
+              <Link to="/login" className="register">
+                Đăng nhập
+              </Link>
             </div>
           </div>
           {/* End Register navigator */}
 
-          <input
-            className="btn-login"
-            type="submit"
-            value="ĐĂNG KÝ"
-            
-          />
+          <input className="btn-login" type="submit" value="ĐĂNG KÝ" />
         </form>
         {/* End form */}
       </div>
     </>
   );
-}
+};
 
 export default Register;
