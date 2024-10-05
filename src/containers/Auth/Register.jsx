@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faEye, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock, faPhone } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,7 @@ import "./Register.scss";
 import { registerUser } from "../../utils/userAPI";
 
 const Register = () => {
+  const navigate = useNavigate()
   const [isShowPass, setShowOrHidePass] = useState(false);
   const [isShowRePass, setShowOrHideRePass] = useState(false);
   const formik = useFormik({
@@ -52,11 +53,19 @@ const Register = () => {
       console.log(registerAPI);
 
       // Chỗ này ông thêm điều kiện như tài khoản đã tồn tại, sđt tồn tại, không tồn tại mã giới thiệu
-      // if(registerAPI && registerAPI.EC === 0) {
-      //   // Cho nó chuyển vào trang login
-      // }else {
-      //   console.log(registerAPI.data);
-      // }
+      if(registerAPI && registerAPI.data.EC === 0) {
+        toast.success("Đăng kí thành công")
+        //Chuyển về trang login
+        navigate("/login")
+      }else {
+        if(registerAPI.data.data === "Tên đăng nhập đã tồn tại"){
+          toast.error("Tên đăng nhập này đã tồn tại")
+        }else if(registerAPI.data.data === "Mã giới thiệu không hợp lệ"){
+          toast.error("Mã giới thiệu không hợp lệ")
+        }else if(registerAPI.data.data === "Số điện thoại đã tồn tại"){
+          toast.error("Số điện thoại đã tồn tại")
+        }
+      }
     },
   });
 

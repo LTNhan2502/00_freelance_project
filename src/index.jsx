@@ -9,6 +9,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import Home from './containers/Home/Home';
 import Login from './containers/Auth/Login';
 import Register from './containers/Auth/Register';
+import Warehouse from './containers/Warehouse/Warehouse';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +18,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} >
           <Route 
-          index
+            index
             path="home" 
             element={
               <PrivateRoute>
@@ -33,6 +34,11 @@ root.render(
             path="register" 
             element={localStorage.getItem("access_token") ? <Navigate to="/home" /> : <Register />} 
           />
+          <Route path='warehouse' element={
+            <PrivateRoute>
+              <Warehouse />
+            </PrivateRoute>
+          }/>
         </Route>
       </Routes>      
     </BrowserRouter>

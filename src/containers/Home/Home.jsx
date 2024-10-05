@@ -4,6 +4,7 @@ import Level_Member from './Level_Member';
 import Info from "./Info";
 import Video from './Video';
 import Recipients from "./Recipients";
+import HotProduct from "./HotProduct";
 import './Home.scss';
 
 const Home = () => {
@@ -19,13 +20,12 @@ const Home = () => {
         </Col>
 
         <Col lg={8} md={6} xs={12} className="mb-4">
-          <Row className="h-100"> {/* Sử dụng Row để giữ cột này cho các phần tử con */}
+          <Row className="h-100">
             {/* Cột cho danh sách sản phẩm hot */}
             <Col lg={6} className="mb-4"> 
               <Card className="h-100 blur-card">
                 <Card.Body>
-                  <Card.Title>Hiển thị các sản phẩm hot</Card.Title>
-                  {/* Thêm danh sách sản phẩm ở đây */}
+                  <HotProduct/>
                 </Card.Body>
               </Card>
             </Col>

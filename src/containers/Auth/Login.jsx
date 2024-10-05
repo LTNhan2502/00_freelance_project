@@ -49,6 +49,7 @@ const Login = () => {
         if (loginAPI && loginAPI.data.EC === 0) {
           // Đăng nhập thành công
           localStorage.setItem("access_token", loginAPI.data.access_token);
+          localStorage.setItem("user_name", loginAPI.data.info);
           toast.success("Đăng nhập thành công!");
 
           // Chuyển hướng về trang home

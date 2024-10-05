@@ -25,8 +25,9 @@ class Navi extends React.Component {
           <Link to="/home">LOGO</Link>
         </div>
         <NavLink to="/home">Home</NavLink>
-        <NavLink to="/login">Login</NavLink>
-        <NavLink to="/register">Register</NavLink>
+        <NavLink to="/login">Đăng nhập</NavLink>
+        <NavLink to="/register">Đăng ký</NavLink>
+        <NavLink to="/warehouse">Kho</NavLink>
 
         {/* Avatar Container */}
         <div className={`profiles-container ${isAuthenticated ? '' : 'd-none'}`}>
