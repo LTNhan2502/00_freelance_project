@@ -12,4 +12,9 @@ const loginUser = (userName, password) => {
    return instance.post(URL_API, data);
 }
 
-export { registerUser, loginUser }
+const getOneUserByUsername = (userName) => {
+   const URL_API = "/v1/api/login";
+   return instance.post(URL_API, userName);
+}
+
+export { registerUser, loginUser, getOneUserByUsername }
