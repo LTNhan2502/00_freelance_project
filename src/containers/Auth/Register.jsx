@@ -52,7 +52,6 @@ const Register = () => {
       // Xem dữ liệu ở đây
       console.log(registerAPI);
 
-      // Chỗ này ông thêm điều kiện như tài khoản đã tồn tại, sđt tồn tại, không tồn tại mã giới thiệu
       if(registerAPI && registerAPI.data.EC === 0) {
         toast.success("Đăng kí thành công")
         //Chuyển về trang login
