@@ -17,6 +17,11 @@ class Navi extends React.Component {
     alert(">>> ", info)
   }
 
+  onClickLogout = () => {
+    localStorage.clear()
+    window.location.href = "/login";
+  }
+
   render() {
     let isAuthenticated = !!localStorage.getItem("access_token");
     return (
@@ -46,7 +51,7 @@ class Navi extends React.Component {
                   <li><p onClick={() => alert("Thông tin ngân hàng")}>Thông tin ngân hàng</p></li>
                   <li><p onClick={() => alert("Địa chỉ")}>Địa chỉ</p></li>
                   <li><p onClick={() => alert("Chuyển đổi ngôn ngữ")}>Chuyển đổi ngôn ngữ</p></li>
-                  <li><p onClick={() => alert("Đăng xuất")}>Đăng xuất</p></li>
+                  <li><p onClick={() => this.onClickLogout()}>Đăng xuất</p></li>
                 </ul>
               </Card.Body>
             </Card>
