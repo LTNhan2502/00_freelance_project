@@ -1,2 +1,0 @@
-Đây là file footer
-Chứa các thiết lập về footer

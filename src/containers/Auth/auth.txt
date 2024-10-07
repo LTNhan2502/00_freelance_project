@@ -1,2 +1,0 @@
-Đây là file auth
-Chứa các thiết lập về đăng nhập, đăng kí, đăng xuất
