@@ -17,23 +17,23 @@ export default function Recipients() {
   const userName = localStorage.getItem("user_name");
 
   const fetchUserAmount = async () => {
-    // console.log("Hello", userName);
-    if (!userName) {
-      setUserAmount(defaultAmount);
-      return;
-    }
+        // console.log("Hello", userName);
+        if (!userName) {
+            setUserAmount(defaultAmount);
+            return;
+        }
 
-    try {
-      console.log("Hello1", userName);
-      const res = await getOneUserByUsername(userName);
-      console.log(res);
-      // Đảm bảo luôn có giá trị hợp lệ
-      setUserAmount(res.data.data || defaultAmount);
-    } catch (error) {
-      console.error("Error fetching user amount:", error);
-      setUserAmount(defaultAmount);
-    }
-  };
+        try {
+            console.log("Hello1", userName);
+            const res = await getOneUserByUsername(userName);
+            console.log(res.data.data);
+            // Đảm bảo luôn có giá trị hợp lệ
+            setUserAmount(res.data.data.amount || defaultAmount);
+        } catch (error) {
+            console.error("Error fetching user amount:", error);
+            setUserAmount(defaultAmount);
+        }
+    };
 
   useEffect(() => {
     fetchUserAmount();

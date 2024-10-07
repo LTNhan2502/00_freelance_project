@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button, Row, Col } from 'react-bootstrap';
-import businessImg from '../../assets/business-7234940_1280.jpg';
+import businessImg from '../../assets/076dba666015d94b8004.jpg';
 import { toast } from 'react-toastify';
 import './HotProduct.scss';
+import { getOneUserByUsername } from '../../utils/userAPI';
 
 function HotProduct() {
     //Data sản phẩm
@@ -12,6 +13,31 @@ function HotProduct() {
         price: 10.0,
         image: businessImg
     }
+
+    const defaultAmount = 0;
+    const [userAmount, setUserAmount] = useState(defaultAmount);
+    const userName = localStorage.getItem("user_name");
+
+    const fetchUserAmount = async () => {
+        if (!userName) {
+            setUserAmount(defaultAmount);
+            return;
+        }
+
+        try {
+            const res = await getOneUserByUsername(userName);
+            console.log(res.data.data);
+            // Đảm bảo luôn có giá trị hợp lệ
+            setUserAmount(res.data.data.amount || defaultAmount);
+        } catch (error) {
+            console.error("Error fetching user amount:", error);
+            setUserAmount(defaultAmount);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserAmount();
+    }, [userName]);
 
     //Handle nhận phân phối
     const handleReceive = () => {
@@ -47,7 +73,7 @@ function HotProduct() {
                             <Card.Text><strong>Số dư:</strong></Card.Text>
                         </Col>
                         <Col md={4} className="text-end">
-                            <Card.Text>500 €</Card.Text>
+                            <Card.Text>{`${userAmount} €`}</Card.Text>
                         </Col>
                     </Row>
                     <Row>

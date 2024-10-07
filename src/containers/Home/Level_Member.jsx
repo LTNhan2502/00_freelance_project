@@ -24,8 +24,8 @@ class Level_Member extends React.Component{
                       <Row>
                         <Col sm={12}>
                           <div className="d-flex align-items-center justify-content-between">
-                            <span className="unlock-title">{level.current ? "Cấp hiện tại" : "Mở khóa"}</span>
-                            <span className={`badge badge-${level.name.toLowerCase()} position-absolute top-0 end-0`}>
+                            <span className={`unlock-title ${level.currentLevel ? "current-level top-0 start-0" : ""}`}>{level.currentLevel ? "Cấp hiện tại" : "Mở khóa"}</span>
+                            <span className="badge badge-bg position-absolute top-0 end-0">
                               {level.name}
                             </span>
                           </div>

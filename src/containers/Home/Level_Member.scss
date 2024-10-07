@@ -13,8 +13,22 @@
         }
     }
 
+    .current-level{
+        min-width: 100px;
+        padding: 0.4em 0.8em !important;
+        text-align: center;
+        font-size: 0.55rem !important;
+        font-weight: 700 !important;
+        border-radius: 10px;
+        text-transform: uppercase;
+        background-color: #ffc107;
+        color: black !important;
+    }
+
     .badge {
+        min-width: 100px;
         padding: 0.4em 0.8em;
+        text-align: center;
         font-size: 0.65rem;
         border-radius: 10px;
         color: white;
@@ -22,6 +36,10 @@
         position: absolute;
         top: 10px; /* Vị trí dính vào góc trên */
         right: 10px;
+
+        &.badge-bg{
+            background-color: #dc3545;
+        }
     }
     
     .unlock-title {
