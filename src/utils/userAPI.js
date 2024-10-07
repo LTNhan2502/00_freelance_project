@@ -18,4 +18,11 @@ const getOneUserByUsername = (userName) => {
    return instance.post(URL_API, data);
 }
 
-export { registerUser, loginUser, getOneUserByUsername }
+const updateMeberToUser = (userId, memberId) => {
+   const URL_API = "v1/api/update_member";
+   const data = { userId, memberId }
+   return instance.post(URL_API, data);
+}
+
+
+export { registerUser, loginUser, getOneUserByUsername, updateMeberToUser }
