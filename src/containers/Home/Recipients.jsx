@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Card } from 'react-bootstrap';
 import axios from 'axios';
 import Video from './Video';
+import { getOneUserByUsername } from '../../utils/userAPI';
 
 export default function Recipients() {
     const [recipients, setRecipients] = useState([]);
+    
 
     const fetchRecipients = async () => {
         const res = await axios.get('https://jsonplaceholder.typicode.com/users');
         setRecipients(res.data)
     }
+    
+
+
 
     useEffect(() => {
         fetchRecipients();
@@ -21,7 +26,8 @@ export default function Recipients() {
     }, []);
 
     useEffect(() => {
-        console.log(">>> Current recipients state: ", recipients);
+        // Gọi api hiển thị người trúng thưởng real-time
+        // console.log(">>> Current recipients state: ", recipients);
       }, [recipients]);
 
     return (

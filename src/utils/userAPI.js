@@ -13,7 +13,7 @@ const loginUser = (userName, password) => {
 }
 
 const getOneUserByUsername = (userName) => {
-   const URL_API = "/v1/api/login";
+   const URL_API = "/v1/api/getOneUser";
    return instance.post(URL_API, userName);
 }
 

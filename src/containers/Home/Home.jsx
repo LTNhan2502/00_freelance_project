@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Level_Member from './Level_Member';
-import Info from "./Info";
+import Info from './Info.jsx'
 import Video from './Video';
 import Recipients from "./Recipients";
 import HotProduct from "./HotProduct";

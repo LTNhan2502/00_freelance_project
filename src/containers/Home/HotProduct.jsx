@@ -3,7 +3,6 @@ import { Card, Button, Row, Col } from 'react-bootstrap';
 import businessImg from '../../assets/business-7234940_1280.jpg';
 import { toast } from 'react-toastify';
 import './HotProduct.scss';
-import distributionImg from '../../assets/euro-background.jpg';
 
 function HotProduct() {
     //Data sản phẩm
@@ -11,7 +10,7 @@ function HotProduct() {
         id: 1,
         name: "Bàn",
         price: 10.0,
-        image: distributionImg
+        image: businessImg
     }
 
     //Handle nhận phân phối

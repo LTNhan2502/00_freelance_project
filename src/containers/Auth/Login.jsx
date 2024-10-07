@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "./Login.scss";
 import { loginUser } from "../../utils/userAPI";
 
-const Login = () => {
+export default function Login (){
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
@@ -130,5 +130,3 @@ const Login = () => {
     </div>
   );
 }
-
-export default Login;

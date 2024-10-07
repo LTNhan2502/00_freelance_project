@@ -5,7 +5,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router-dom";
 import Navi from "../components/Navigation/Navi";
 
-
 class App extends React.Component {
   render() {
     return (
