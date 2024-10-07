@@ -18,9 +18,9 @@ const getOneUserByUsername = (userName) => {
    return instance.post(URL_API, data);
 }
 
-const updateMeberToUser = (userId, memberId) => {
+const updateMeberToUser = (userName, memberId) => {
    const URL_API = "v1/api/update_member";
-   const data = { userId, memberId }
+   const data = { userName, memberId }
    return instance.post(URL_API, data);
 }
 

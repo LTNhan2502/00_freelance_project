@@ -34,7 +34,7 @@
         color: white;
         text-transform: uppercase;
         position: absolute;
-        top: 10px; /* Vị trí dính vào góc trên */
+        top: 10px;
         right: 10px;
 
         &.badge-bg{
@@ -43,9 +43,10 @@
     }
     
     .unlock-title {
-        font-size: 0.9rem; /* Tăng kích thước chữ cho "Mở khóa" */
-        font-weight: bold; /* Làm đậm chữ */
+        font-size: 0.9rem; 
+        font-weight: bold;
         color: #ffffff;
+        cursor: pointer;
     }
 }
   

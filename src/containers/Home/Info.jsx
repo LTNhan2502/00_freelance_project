@@ -11,9 +11,8 @@ import {
 import "./Info.scss";
 import { getOneUserByUsername } from "../../utils/userAPI";
 
-export default function Recipients() {
+export default function Info({ userAmount, setUserAmount }) {
   const defaultAmount = 0;
-  const [userAmount, setUserAmount] = useState(defaultAmount);
   const userName = localStorage.getItem("user_name");
 
   const fetchUserAmount = async () => {
@@ -24,7 +23,6 @@ export default function Recipients() {
         }
 
         try {
-            console.log("Hello1", userName);
             const res = await getOneUserByUsername(userName);
             console.log(res.data.data);
             // Đảm bảo luôn có giá trị hợp lệ

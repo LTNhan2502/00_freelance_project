@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Level_Member from './Level_Member';
 import Info from './Info.jsx'
@@ -8,15 +8,17 @@ import HotProduct from "./HotProduct";
 import './Home.scss';
 
 const Home = () => {
+  const [userAmount, setUserAmount] = useState(0)
+  
   return (
     <Container className="custom-container py-5">
       <Row className="my-4 justify-content-center">
         <Col lg={4} md={6} xs={12} className="mb-4">
           {/* Info */}
-          <Info />
+          <Info userAmount={userAmount} setUserAmount={setUserAmount}/>
           
           {/* Cấp thành viên */}
-          <Level_Member />
+          <Level_Member userAmount={userAmount}/>
         </Col>
 
         <Col lg={8} md={6} xs={12} className="mb-4">
