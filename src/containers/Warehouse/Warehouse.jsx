@@ -10,7 +10,7 @@ function Warehouse() {
         if (productData) {
             setSavedProduct(JSON.parse(productData));
         }
-    }, [savedProduct]);
+    }, []);
     return (
         <Container className='mt-1 py-5 warehouse-container'>
             <Row className="h-100 mt-3 justify-content-center align-items-center">
