@@ -107,14 +107,13 @@ function Warehouse() {
                                                         <Card.Text>Lợi nhuận</Card.Text>
                                                     </Col>
                                                     <Col className="text-end">
-                                                        <Card.Text>... €</Card.Text>
+                                                        <Card.Text>{Number((product.price * product.quantity * 0.0024).toFixed(2))} €</Card.Text>
                                                     </Col>
                                                 </Row>
                                             </Card.Body>
                                         </Card>
                                     ))}
 
-                                    {/* Nút Phân phối nằm bên phải */}
                                     <div className="text-end">
                                         <Button variant="primary" className="mt-3" onClick={handleDistribute}>
                                             Phân phối
