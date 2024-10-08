@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Container, Row, Col } from 'react-bootstrap';
-import './Level_Member.scss';
-import { getAllMemberPackage } from '../../utils/memberPackageAPI';
-import { getOneUserByUsername, updateMeberToUser } from '../../utils/userAPI';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { Card, Container, Row, Col } from "react-bootstrap";
+import "./Level_Member.scss";
+import { getAllMemberPackage } from "../../utils/memberPackageAPI";
+import { getOneUserByUsername, updateMemberToUser } from "../../utils/userAPI";
+import { toast } from "react-toastify";
 
-function Level_Member({userAmount}) {
-  const userName = localStorage.getItem("user_name")
+function Level_Member({ userAmount }) {
+  const userName = localStorage.getItem("user_name");
   const [dataSource, setDataSource] = useState([]);
-  const [loading, setLoading] = useState(true);  
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAllMembership();
@@ -24,7 +24,7 @@ function Level_Member({userAmount}) {
         setDataSource(result);
       }
     } catch (error) {
-      console.error('Error fetching membership data:', error);
+      console.error("Error fetching membership data:", error);
     } finally {
       setLoading(false);
     }
@@ -38,14 +38,16 @@ function Level_Member({userAmount}) {
   // Vấn đề ở đây
   const unlockMembership = async (packageName, memberID, packagePrice) => {
     // Kiểm tra tham số
-    console.log("User Amount:", userAmount);
-    console.log("Package Price:", packagePrice);
+    // console.log("User Amount:", userAmount);
+    // console.log("Package Price:", packagePrice);
 
     // Kiểm tra kiểu dữ liệu
-    console.log("User Amount Type:", typeof userAmount);
-    console.log("Package Price Type:", typeof packagePrice);
-    
-    const unlock = await updateMeberToUser(userName, memberID)
+    // console.log("User Amount Type:", typeof userAmount);
+    // console.log("Package Price Type:", typeof packagePrice);
+    console.log(memberID);
+    console.log(userName);
+
+    const unlock = await updateMemberToUser(userName, memberID);
     console.log(unlock);
 
     // if(userAmount < packagePrice){
@@ -56,12 +58,12 @@ function Level_Member({userAmount}) {
     //     // if(unlock){
     //     //   toast.success(`Mua gói ${packageName} thành công`)
     //     // }
-        
+
     //   } catch (error) {
     //     toast.error("Mua gói thất bại")
     //   }
     // }
-  }
+  };
 
   return (
     <Container className="full-height-container p-0 mt-3">
@@ -74,8 +76,19 @@ function Level_Member({userAmount}) {
                 <Row>
                   <Col sm={12}>
                     <div className="d-flex align-items-center justify-content-between">
-                      <span className={`unlock-title ${level.currentLevel ? "current-level top-0 start-0" : ""}`}
-                        onClick={() => unlockMembership(level.packageName, level._id, level.price)}
+                      <span
+                        className={`unlock-title ${
+                          level.currentLevel
+                            ? "current-level top-0 start-0"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          unlockMembership(
+                            level.packageName,
+                            level._id,
+                            level.price
+                          )
+                        }
                       >
                         {level.currentLevel ? "Cấp hiện tại" : "Mở khóa"}
                       </span>
