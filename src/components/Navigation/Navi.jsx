@@ -19,7 +19,8 @@ class Navi extends React.Component {
   }
 
   onClickLogout = () => {
-    localStorage.clear()
+    localStorage.removeItem("user_name")
+    localStorage.removeItem("access_token")
     window.location.href = "/login";
   }
 

@@ -27,7 +27,7 @@ const Home = () => {
             <Col lg={6} className="mb-4"> 
               <Card className="h-100 blur-card">
                 <Card.Body>
-                  <HotProduct/>
+                  <HotProduct />
                 </Card.Body>
               </Card>
             </Col>

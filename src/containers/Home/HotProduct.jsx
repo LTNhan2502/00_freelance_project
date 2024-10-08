@@ -4,18 +4,12 @@ import businessImg from '../../assets/076dba666015d94b8004.jpg';
 import { toast } from 'react-toastify';
 import './HotProduct.scss';
 import { getOneUserByUsername } from '../../utils/userAPI';
+import { getProductNoUsername, updateUsernameToProduct } from '../../utils/product';
 
 function HotProduct() {
-    // Data sản phẩm
-    const distribution_product = {
-        id: 1,
-        name: "Bàn",
-        price: 10.0,
-        image: businessImg
-    };
-
     const [thisUser, setThisUser] = useState(null);
     const [userAmount, setUserAmount] = useState(0);
+    const [distProduct, setDistProduct] = useState([]);
     const userName = localStorage.getItem("user_name");
 
     useEffect(() => {
@@ -37,18 +31,53 @@ function HotProduct() {
         };
 
         fetchUserAmount();
+        fetchProductsNoUsername();
     }, [userName]);
 
-    // Handle nhận phân phối
-    const handleReceive = () => {
-        localStorage.setItem("receivedProduct", JSON.stringify(distribution_product));
+    // Fetch lấy tất cả hàng cần phân phối
+    const fetchProductsNoUsername = async() => {
+        try {
+            const products = await getProductNoUsername();
+            const result = products.data.data
+            setDistProduct(result)
+        } catch (error) {
+            console.error("Fetch thất bại:", error);
+        }
+    }
 
-        if (localStorage.getItem("receivedProduct")) {
-            toast.success("Nhận hàng thành công!");
-        } else {
-            toast.error("Nhận hàng thất bại!");
+    // Handle nhận phân phối
+    // Handle nhận phân phối
+    const handleReceive = async () => {
+        // Filter sản phẩm có price bé hơn userAmount
+        const productsCanDist = distProduct.filter((product) => product.price <= userAmount);
+
+        if (productsCanDist.length === 0) {
+            toast.error("Không có sản phẩm nào phù hợp với số dư hiện tại");
+            return;
+        }
+
+        // Lấy ngẫu nhiên một sản phẩm từ danh sách đã lọc
+        const randomIndex = Math.floor(Math.random() * productsCanDist.length);
+        const selectedProduct = productsCanDist[randomIndex];
+
+        try {
+            // Gọi API cập nhật sở hữu mặt hàng
+            console.log("ID sản phẩm: ",selectedProduct._id);            
+            console.log("Tên sản phẩm: ",selectedProduct.productName);            
+            console.log("Tên người dùng: ",userName);            
+            const updateUTP = await updateUsernameToProduct(selectedProduct._id, userName);
+            console.log(updateUTP);
+            
+            localStorage.setItem("savedProduct", JSON.stringify(selectedProduct));
+
+            toast.success(`Nhận thành công sản phẩm: ${selectedProduct.productName}`);
+        } catch (error) {
+            toast.error("Cập nhật sở hữu sản phẩm thất bại");
+            console.error("Lỗi cập nhật sở hữu:", error);
         }
     };
+
+
 
     const handleReject = () => {
         toast.error("Bạn chưa mua gói")
