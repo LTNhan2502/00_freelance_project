@@ -61,15 +61,9 @@ function HotProduct() {
         const selectedProduct = productsCanDist[randomIndex];
 
         try {
-            // Gọi API cập nhật sở hữu mặt hàng
-            console.log("ID sản phẩm: ",selectedProduct._id);            
-            console.log("Tên sản phẩm: ",selectedProduct.productName);            
-            console.log("Tên người dùng: ",userName);            
+            // Gọi API cập nhật sở hữu mặt hàng          
             const updateUTP = await updateUsernameToProduct(selectedProduct._id, userName);
-            console.log(updateUTP);
             
-            localStorage.setItem("savedProduct", JSON.stringify(selectedProduct));
-
             toast.success(`Nhận thành công sản phẩm: ${selectedProduct.productName}`);
         } catch (error) {
             toast.error("Cập nhật sở hữu sản phẩm thất bại");
@@ -110,7 +104,7 @@ function HotProduct() {
                     </Row>
                     <Row>
                         <Col md={8} className='text-start'><strong>Đơn hàng đã phân phối:</strong></Col>
-                        <Col md={4} className="text-end">...</Col>
+                        <Col md={4} className="text-end">0/60</Col>
                     </Row>
                     <Row>
                         <Col md={8} className='text-start'><strong>Chiết khấu hôm nay:</strong></Col>
