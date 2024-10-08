@@ -35,13 +35,14 @@ export default function Recipients() {
             <Card.Body>
                 <Card.Title>Người dùng trúng thưởng</Card.Title>
                 <div>
-                    {recipients && recipients.length > 0 &&                    
+                    {/* {recipients && recipients.length > 0 &&                    
                         recipients.map((recipients, index) => {
                             return(
                                 <div key={recipients.id}>{recipients.name} - {recipients.email}</div>
                             )
                         })
-                    }
+                    } */}
+                    <p>Đang cập nhật...</p>
                 </div>
             </Card.Body>
         </Card>

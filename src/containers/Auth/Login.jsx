@@ -54,6 +54,7 @@ export default function Login (){
 
           // Chuyển hướng về trang home
           navigate("/home");
+          window.location.reload()
         } else {
           // Đăng nhập không thành công 
           toast.error(loginAPI.data.message || "Đăng nhập không thành công");

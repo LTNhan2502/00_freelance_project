@@ -23,11 +23,23 @@
         .p{
             padding-left: 10px;
         }
+
+        .company-info{
+            cursor: pointer;
+        }
+
+        .noti-mail{
+            cursor: pointer;
+        }
     }
 
     .box-click{
         cursor: pointer;
     }
+}
+
+.modal-content{
+    background-color: rgba(218, 218, 218, 0.929);
 }
   
   
