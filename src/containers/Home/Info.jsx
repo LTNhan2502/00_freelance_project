@@ -25,7 +25,7 @@ export default function Info({ userAmount, setUserAmount }) {
 
     try {
       const res = await getOneUserByUsername(userName);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setUserAmount(res.data.data.amount || defaultAmount);
     } catch (error) {
       console.error("Error fetching user amount:", error);
@@ -35,7 +35,7 @@ export default function Info({ userAmount, setUserAmount }) {
 
   useEffect(() => {
     fetchUserAmount();
-  }, [userName]);
+  }, [userName, userAmount]);
 
   const onClickClick = () => {
     alert("Click click");

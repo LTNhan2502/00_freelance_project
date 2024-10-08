@@ -16,6 +16,13 @@
     text-decoration: none;
     color: white;
 
+    .logo-img{
+      width: 100px; 
+      height: auto; 
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
     &.active {
       border-bottom: 2px solid #c8275f;
       color: white;

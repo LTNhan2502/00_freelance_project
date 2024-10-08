@@ -5,65 +5,46 @@ import { getAllMemberPackage } from "../../utils/memberPackageAPI";
 import { getOneUserByUsername, updateMemberToUser } from "../../utils/userAPI";
 import { toast } from "react-toastify";
 
-function Level_Member({ userAmount }) {
+function Level_Member() {
   const userName = localStorage.getItem("user_name");
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [thisUser, setThisUser] = useState(null);
 
   useEffect(() => {
+    const fetchAllMembership = async () => {
+      try {
+        const [memberPackages, userInfo] = await Promise.all([
+          getAllMemberPackage(),
+          getOneUserByUsername(userName),
+        ]);
+        setDataSource(memberPackages.data.data);
+        setThisUser(userInfo.data.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch membership data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAllMembership();
-  }, []);
+  }, [userName]);
 
-  // Fetch api lấy tất cả gói thành viên
-  const fetchAllMembership = async () => {
+  const unlockMembership = async (packageName, memberID) => {
     try {
-      const getMemberPackages = await getAllMemberPackage();
-      const result = getMemberPackages.data.data;
-
-      if (result) {
-        setDataSource(result);
+      const unlock = await updateMemberToUser(userName, memberID);
+      if (unlock.data.data === "Bạn không đủ tiền mua gói") {
+        toast.error("Số dư không đủ! Hãy nạp thêm tiền!");
+      } else {
+        toast.success(`Bạn đã mua gói ${packageName} thành công!`);
+        setTimeout(() => window.location.reload(), 2500);
       }
     } catch (error) {
-      console.error("Error fetching membership data:", error);
-    } finally {
-      setLoading(false);
+      console.error("Lỗi khi mua gói thành viên:", error);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // Fetch api mua gói thành viên
-  // Vấn đề ở đây
-  const unlockMembership = async (packageName, memberID, packagePrice) => {
-    // Kiểm tra tham số
-    // console.log("User Amount:", userAmount);
-    // console.log("Package Price:", packagePrice);
-
-    // Kiểm tra kiểu dữ liệu
-    // console.log("User Amount Type:", typeof userAmount);
-    // console.log("Package Price Type:", typeof packagePrice);
-    console.log(memberID);
-    console.log(userName);
-
-    const unlock = await updateMemberToUser(userName, memberID);
-    console.log(unlock);
-
-    // if(userAmount < packagePrice){
-    //   toast.error("Tài khoản không đủ để nâng cấp! Xin hãy nạp thêm!")
-    //   return;
-    // }else{
-    //   try {
-    //     // if(unlock){
-    //     //   toast.success(`Mua gói ${packageName} thành công`)
-    //     // }
-
-    //   } catch (error) {
-    //     toast.error("Mua gói thất bại")
-    //   }
-    // }
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
     <Container className="full-height-container p-0 mt-3">
@@ -77,20 +58,11 @@ function Level_Member({ userAmount }) {
                   <Col sm={12}>
                     <div className="d-flex align-items-center justify-content-between">
                       <span
-                        className={`unlock-title ${
-                          level.currentLevel
-                            ? "current-level top-0 start-0"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          unlockMembership(
-                            level.packageName,
-                            level._id,
-                            level.price
-                          )
-                        }
+                        className={level._id === thisUser?.memberId?._id ? "current-level" : "unlock-title"}
+                        onClick={() => level._id !== thisUser?.memberId?._id && unlockMembership(level.packageName, level._id)}
+                        style={{ cursor: level._id === thisUser?.memberId?._id ? "not-allowed" : "pointer" }}
                       >
-                        {level.currentLevel ? "Cấp hiện tại" : "Mở khóa"}
+                        {level._id === thisUser?.memberId?._id ? "Cấp hiện tại" : "Mở khóa"}
                       </span>
                       <span className="badge badge-bg position-absolute top-0 end-0">
                         {level.packageName}

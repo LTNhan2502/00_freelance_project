@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Button, Collapse, Card } from "react-bootstrap";
+import logo from '../../assets/logo.jpg';
 import avatar from '../../assets/icon-5355896_1920.png';
 import "./Navi.scss";
 
@@ -29,9 +30,11 @@ class Navi extends React.Component {
         {isAuthenticated ? (
           <div className="topnav">
             <div className="text-white p-2">
-              <Link to="/home">LOGO</Link>
+              <Link to="/home">
+                <img src={logo} className="logo-img"/>
+              </Link>
             </div>
-            <NavLink to="/home">Home</NavLink>
+            <NavLink to="/home">Trang chủ</NavLink>
 
             {/* Không hiển thị đăng nhập đăng kí khi đã đăng nhập */}
             {!isAuthenticated ? (
