@@ -15,7 +15,7 @@ const getProductNoUsername = () => {
 const updateUsernameToProduct = (productId, userName) => {
    const URL_API = "/v1/api/updateUsernameToProduct";
    const data = { productId, userName }
-   return instance.post(URL_API);
+   return instance.post(URL_API, data);
 }
 
 export { getAllProduct, getProductNoUsername, updateUsernameToProduct }
