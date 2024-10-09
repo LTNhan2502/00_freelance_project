@@ -63,6 +63,7 @@ function Warehouse() {
                 toast.success("Phân phối thành công");
                 getDistributedProducts(); // Cập nhật danh sách sản phẩm sau khi phân phối
             }
+            handleCloseDistInfo();
         } catch (error) {
             console.log("Error fetching: ", error);
             toast.error("Phân phối thất bại");
