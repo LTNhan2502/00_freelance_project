@@ -24,5 +24,11 @@ const getProductWaiting = (userName) => {
    return instance.post(URL_API, data);
 }
 
-export { getAllProduct, getProductNoUsername, updateUsernameToProduct, getProductWaiting }
+const profitDistribution = (productId, userName, amount) => {
+   const URL_API = "/v1/api/profitDistribution";
+   const data = { productId, userName, amount }
+   return instance.post(URL_API, data);
+}
+
+export { getAllProduct, getProductNoUsername, updateUsernameToProduct, getProductWaiting, profitDistribution }
 

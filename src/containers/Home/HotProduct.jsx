@@ -13,30 +13,32 @@ function HotProduct() {
     const [distProduct, setDistProduct] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [isClickReceive, setIsClickReceive] = useState(null)
     const userName = localStorage.getItem("user_name");
 
-    useEffect(() => {
-        const fetchUserAmount = async () => {
-            if (!userName) {
-                setUserAmount(0);
-                return;
-            }
-
-            try {
-                const res = await getOneUserByUsername(userName);
-                const userData = res.data.data || {};
-                setUserAmount(userData.amount || 0);
-                setThisUser(userData);
-            } catch (error) {
-                console.error("Error fetching user amount:", error);
-                setUserAmount(0);
-            }
-        };
-
+    useEffect(() => {        
         fetchUserAmount();
         fetchProductsNoUsername();
-    }, [userName]);
+    }, [userName, isClickReceive]);
 
+    const fetchUserAmount = async () => {
+        if (!userName) {
+            setUserAmount(0);
+            return;
+        }
+
+        try {
+            const res = await getOneUserByUsername(userName);
+            const userData = res.data.data || {};
+            
+            setUserAmount(userData.amount || 0);
+            setThisUser(userData);
+        } catch (error) {
+            console.error("Error fetching user amount:", error);
+            setUserAmount(0);
+        }
+    };
+    
     const fetchProductsNoUsername = async () => {
         try {
             const products = await getAllProduct();
@@ -81,6 +83,9 @@ function HotProduct() {
         try {
             await updateUsernameToProduct(selectedProduct._id, userName);
             toast.success(`Nhận thành công sản phẩm: ${selectedProduct.productName}`);
+            setIsClickReceive(thisUser.isDistribute)
+            console.log(isClickReceive);
+            
             setShowModal(false);
         } catch (error) {
             toast.error("Cập nhật sở hữu sản phẩm thất bại");
@@ -93,10 +98,10 @@ function HotProduct() {
             (product) => product.userName === userName && product.status === "waiting"
         );
         
-        if (isCurrentDist.length !== 0) {
+        if (isCurrentDist.length !== 0 || isClickReceive === true) {
             toast.error("Có đơn hàng chưa thanh toán, vui lòng thanh toán trước!");
             return;
-        } else {
+        }else{
             handleClickReceive(); // Thực hiện nhận phân phối
         }
     };
@@ -115,6 +120,12 @@ function HotProduct() {
                 variant="primary"
                 className="mt-3"
                 onClick={() => !thisUser?.memberId ? handleReject() : handleReceivable()}
+                style={{
+                    backgroundColor: "#0262b0",
+                    borderRadius: "0.325rem",
+                    fontSize: "15px",
+                    width: "150px"
+                }} 
             >
                 Nhận hàng
             </Button>
