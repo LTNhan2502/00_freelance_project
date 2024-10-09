@@ -19,6 +19,8 @@ function HotProduct() {
     useEffect(() => {        
         fetchUserAmount();
         fetchProductsNoUsername();
+        console.log(thisUser);
+        
     }, [userName, isClickReceive]);
 
     const fetchUserAmount = async () => {
@@ -221,11 +223,11 @@ function HotProduct() {
                     </Row>
                     <Row>
                         <Col md={8} className='text-start'><strong>Đơn hàng đã phân phối:</strong></Col>
-                        <Col md={4} className="text-end">0/60</Col>
+                        <Col md={4} className="text-end">{`${thisUser?.distributionTurn || 0}/${thisUser?.memberId?.distribution || 0}`}</Col>
                     </Row>
                     <Row>
                         <Col md={8} className='text-start'><strong>Chiết khấu hôm nay:</strong></Col>
-                        <Col md={4} className="text-end">100 €</Col>
+                        <Col md={4} className="text-end">0 €</Col>
                     </Row>
                 </Card.Body>
             </Card>
