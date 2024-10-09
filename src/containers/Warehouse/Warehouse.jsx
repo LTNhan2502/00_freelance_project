@@ -9,10 +9,12 @@ function Warehouse() {
     const userName = localStorage.getItem("user_name");
     const [savedProducts, setSavedProducts] = useState([]);
     const [imageURLs, setImageURLs] = useState({});
+    const [showModal, setShowModal] = useState(false); // Trạng thái để kiểm soát modal
+    const [selectedProduct, setSelectedProduct] = useState({}); // Lưu thông tin sản phẩm được chọn
 
     useEffect(() => {
         getDistributedProducts();
-    }, [savedProducts]);
+    }, []); // Chỉ gọi một lần khi component mount
 
     const fetchImage = async (imageName) => {
         try {
@@ -26,36 +28,45 @@ function Warehouse() {
     };
 
     const getDistributedProducts = async () => {
-        const res = await getProductWaiting(userName);
-        const result = res.data.data;        
+        try {
+            const res = await getProductWaiting(userName);
+            const result = res?.data?.data;
 
-        if (result && res.data.data) {
-            setSavedProducts(result);
+            if (result) {
+                setSavedProducts(result);
 
-            const imageFetchPromises = result.map(async (product) => {
-                const imageUrl = await fetchImage(product.imageProduct);
-                return { [product._id]: imageUrl };
-            });
+                const imageFetchPromises = result.map(async (product) => {
+                    const imageUrl = await fetchImage(product.imageProduct);
+                    return { [product._id]: imageUrl };
+                });
 
-            const imageResults = await Promise.all(imageFetchPromises);
-            const imagesMap = Object.assign({}, ...imageResults);
-            setImageURLs(imagesMap);
+                const imageResults = await Promise.all(imageFetchPromises);
+                const imagesMap = Object.assign({}, ...imageResults);
+                setImageURLs(imagesMap);
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy sản phẩm:", error);
         }
-    }
+    };
 
-    const handleSubmitDist = async(productId, refund, profitNew) => {
-        
+    const handleShowDistInfo = (product) => {
+        setSelectedProduct(product); // Lưu sản phẩm được chọn
+        setShowModal(true); // Mở modal
+    };
+
+    const handleCloseDistInfo = () => setShowModal(false); // Đóng modal
+
+    const handleSubmitDist = async (productId, refund, profitNew) => {
         try {
             const res = await profitDistribution(productId, userName, refund, profitNew);
-            if(res.data.data === "Lợi nhuận phân phối thành công"){
-                toast.success("Phân phối thành công")
-            }            
+            if (res?.data?.data === "Lợi nhuận phân phối thành công") {
+                toast.success("Phân phối thành công");
+                getDistributedProducts(); // Cập nhật danh sách sản phẩm sau khi phân phối
+            }
         } catch (error) {
             console.log("Error fetching: ", error);
-            toast.error("Phân phối thất bại")
+            toast.error("Phân phối thất bại");
         }
-        
-        
     };
 
     return (
@@ -63,88 +74,179 @@ function Warehouse() {
             <h4 className="text-center mb-4" style={{ color: "white" }}>Lịch sử phân phối</h4>
             <Row className="g-4">
                 {savedProducts.length > 0 ? (
-                    savedProducts.map((product) => (
-                        <Col xs={12} sm={6} md={4} lg={4} key={product._id}>
-                            <Card className="h-100 received-product-card">
-                                <div className={`stamp ${product.status === 'waiting' ? 'waiting' : 'success'}`}>
-                                    <div className="stamp-inside">
-                                        <span>{product.status === 'waiting' ? 'Waiting' : 'Success'}</span>
-                                    </div>
-                                </div>
+                    savedProducts.map((product) => {
+                        const totalDistribution = (product.price * product.quantity).toFixed(2);
+                        const profit = (product.price * product.quantity * 0.0024).toFixed(2);
+                        const refund = (parseFloat(profit) + product.price).toFixed(2);
 
-                                <Card.Img
-                                    variant="left"
-                                    src={imageURLs[product._id] || ''}
-                                    style={{
-                                        width: "150px",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                                <Card.Body>
-                                    <Card.Title style={{ fontSize: '14px' }}>
-                                        {product.status !== 'waiting' ? (
-                                            <div className='mt-2' style={{ fontSize: "12px" }}>Thời gian: {product.receiving_time}</div>
-                                        ) : (<></>)}
-                                        <div style={{ fontSize: '12px', wordWrap: 'break-word' }}>Mã: {product._id}</div>
-                                        <div className='mt-2'>{product.productName}</div>
-                                    </Card.Title>
-                                    <Row className='warehouse-general'>
-                                        <Col>
-                                            <Card.Text>{product.price.toFixed(2)} €</Card.Text>
-                                        </Col>
-                                        <Col className="text-end">
-                                            <Card.Text>X{product.quantity}</Card.Text>
-                                        </Col>
-                                    </Row>
-                                    <Row className='warehouse-info mt-2'>
-                                        <Col>
-                                            <Card.Text>Tổng phân phối</Card.Text>
-                                        </Col>
-                                        <Col className="text-end">
-                                            <Card.Text>{(product.price * product.quantity).toFixed(2)} €</Card.Text>
-                                        </Col>
-                                    </Row>
-                                    <Row className='warehouse-info'>
-                                        <Col>
-                                            <Card.Text>Lợi nhuận</Card.Text>
-                                        </Col>
-                                        <Col className="text-end">
-                                            <Card.Text>{Number((product.price * product.quantity * 0.0024).toFixed(2))} €</Card.Text>
-                                        </Col>
-                                    </Row>
-                                    <Row className='warehouse-info'>
-                                        <Col>
-                                            <Card.Text>Hoàn nhập</Card.Text>
-                                        </Col>
-                                        <Col className="text-end">
-                                            <Card.Text className='text-red'>{(product.price * product.quantity * 0.0024 + product.price).toFixed(2)} €</Card.Text>
-                                        </Col>
-                                    </Row>  
-                                    {product.status === 'waiting' ? (
+                        return (
+                            <Col xs={12} sm={6} md={4} lg={4} key={product._id}>
+                                <Card className="h-100 received-product-card">
+                                    <div className={`stamp ${product.status === 'waiting' ? 'waiting' : 'success'}`}>
+                                        <div className="stamp-inside">
+                                            <span>{product.status === 'waiting' ? 'Waiting' : 'Success'}</span>
+                                        </div>
+                                    </div>
+
+                                    <Card.Img
+                                        variant="left"
+                                        src={imageURLs[product._id] || 'placeholder-image-url'} // Thêm placeholder khi chưa có ảnh
+                                        style={{
+                                            width: "150px",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                        }}
+                                        onError={(e) => e.target.src = 'placeholder-image-url'} // Fallback khi lỗi ảnh
+                                    />
+                                    <Card.Body>
+                                        <Card.Title style={{ fontSize: '14px' }}>
+                                            {product.status !== 'waiting' && (
+                                                <div className='mt-2' style={{ fontSize: "12px" }}>
+                                                    Thời gian: {product.receiving_time}
+                                                </div>
+                                            )}
+                                            <div style={{ fontSize: '12px', wordWrap: 'break-word' }}>Mã: {product._id}</div>
+                                            <div className='mt-2'>{product.productName}</div>
+                                        </Card.Title>
+                                        <Row className='warehouse-general'>
+                                            <Col>
+                                                <Card.Text>{product.price.toFixed(2)} €</Card.Text>
+                                            </Col>
+                                            <Col className="text-end">
+                                                <Card.Text>X{product.quantity}</Card.Text>
+                                            </Col>
+                                        </Row>
+                                        <Row className='warehouse-info mt-2'>
+                                            <Col>
+                                                <Card.Text>Tổng phân phối</Card.Text>
+                                            </Col>
+                                            <Col className="text-end">
+                                                <Card.Text>{totalDistribution} €</Card.Text>
+                                            </Col>
+                                        </Row>
                                         <Row className='warehouse-info'>
-                                            <div className="text-end">
-                                                <Button className="mt-3 ms-2 custome-btn" onClick={() => handleSubmitDist(product._id, ((product.price * product.quantity * 0.0024 + product.price).toFixed(2)), ((product.price * product.quantity * 0.0024).toFixed(2)))}
-                                                    style={{
-                                                        backgroundColor: "#0262b0",
-                                                        borderRadius: "0.325rem",
-                                                        fontSize: "12px",
-                                                        width: "150px"
-                                                    }}    
-                                                >
-                                                    Gửi phân phối
-                                                </Button>
-                                            </div>
-                                        </Row>                                 
-                                    ) : (<></>)} 
-                                </Card.Body>
-                            </Card>                            
-                        </Col>
-                    ))
+                                            <Col>
+                                                <Card.Text>Lợi nhuận</Card.Text>
+                                            </Col>
+                                            <Col className="text-end">
+                                                <Card.Text>{profit} €</Card.Text>
+                                            </Col>
+                                        </Row>
+                                        <Row className='warehouse-info'>
+                                            <Col>
+                                                <Card.Text>Hoàn nhập</Card.Text>
+                                            </Col>
+                                            <Col className="text-end">
+                                                <Card.Text className='text-red'>{refund} €</Card.Text>
+                                            </Col>
+                                        </Row>
+                                        {product.status === 'waiting' && (
+                                            <Row className='warehouse-info'>
+                                                <div className="text-end">
+                                                    <Button
+                                                        className="mt-3 ms-2 custome-btn"
+                                                        onClick={() => handleShowDistInfo(product)} // Mở modal
+                                                        style={{
+                                                            backgroundColor: "#0262b0",
+                                                            borderRadius: "0.325rem",
+                                                            fontSize: "12px",
+                                                            width: "150px"
+                                                        }}
+                                                    >
+                                                        Gửi phân phối
+                                                    </Button>
+                                                </div>
+                                            </Row>
+                                        )}
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        );
+                    })
                 ) : (
                     <h5 className="text-center">Chưa nhận sản phẩm nào</h5>
                 )}
             </Row>
+
+            {/* Modal thông tin sản phẩm */}
+            <Modal show={showModal} onHide={handleCloseDistInfo} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Thông tin sản phẩm</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card className="h-100 received-product-card"
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            width: "100%",
+                            margin: "0",
+                            border: "none",
+                            backgroundColor: "transparent",
+                            backdropFilter: "blur(6px)",
+                        }}
+                    >
+                        <Card.Img
+                            variant="left"
+                            src={imageURLs[selectedProduct._id] || ''} // Sử dụng ảnh từ imageURLs
+                            style={{ width: '150px', height: '100%', objectFit: 'cover' }}
+                        />
+                        <Card.Body>
+                            <Card.Title>
+                                <div>Mã: {selectedProduct._id}</div>
+                                <div className="mt-2">Tên: {selectedProduct.productName}</div>
+                            </Card.Title>
+                            <Row>
+                                <Col>
+                                    <Card.Text>{selectedProduct.price?.toFixed(2)} €</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>X{selectedProduct.quantity}</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info mt-2'>
+                                <Col>
+                                    <Card.Text>Tổng phân phối</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>{(selectedProduct.price * selectedProduct.quantity)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col>
+                                    <Card.Text>Lợi nhuận</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>{(selectedProduct.price * selectedProduct.quantity * 0.0024)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col>
+                                    <Card.Text>Hoàn nhập</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text className='fs-4 text-red'>{((selectedProduct.price * selectedProduct.quantity * 0.0024) + selectedProduct.price)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col className="text-end">
+                                    <Button
+                                        className="mt-3 custome-btn"
+                                        onClick={() => handleSubmitDist(selectedProduct._id, ((selectedProduct.price * selectedProduct.quantity * 0.0024) + selectedProduct.price)?.toFixed(2), (selectedProduct.price * selectedProduct.quantity * 0.0024)?.toFixed(2))}
+                                        style={{
+                                            backgroundColor: "#0262b0",
+                                            borderRadius: "0.325rem",
+                                            fontSize: "12px",
+                                            width: "150px"
+                                        }}
+                                    >
+                                        Xác nhận phân phối
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Modal.Body>
+            </Modal>
         </Container>
     );
 }

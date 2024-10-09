@@ -24,9 +24,9 @@ const getProductWaiting = (userName) => {
    return instance.post(URL_API, data);
 }
 
-const profitDistribution = (productId, userName, amount, profitNew) => {
+const profitDistribution = (productId, userName, amount) => {
    const URL_API = "/v1/api/profitDistribution";
-   const data = { productId, userName, amount, profitNew }
+   const data = { productId, userName, amount }
    return instance.post(URL_API, data);
 }
 
