@@ -52,9 +52,9 @@ class Navi extends React.Component {
               <Button onClick={this.toggleCard} className="avatar-btn">
                 <img src={avatar} alt="Avatar" className="avatar-img" />
               </Button>
-              
-              {/* Card Info */}
-              <Collapse in={this.state.open}>
+
+              {/* Slide-In Panel */}
+              <div className={`info-panel ${this.state.open ? 'open' : ''}`}>
                 <Card className="info-card">
                   <Card.Body>
                     <ul className="list-unstyled">
@@ -64,14 +64,16 @@ class Navi extends React.Component {
                       <li><p onClick={() => alert("Thông tin ngân hàng")}>Thông tin ngân hàng</p></li>
                       <li><p onClick={() => alert("Địa chỉ")}>Địa chỉ</p></li>
                       <li><p onClick={() => alert("Chuyển đổi ngôn ngữ")}>Chuyển đổi ngôn ngữ</p></li>
-                      <li><p onClick={() => this.onClickLogout()}>Đăng xuất</p></li>
+                      <li><p onClick={this.onClickLogout}>Đăng xuất</p></li>
                     </ul>
                   </Card.Body>
                 </Card>
-              </Collapse>
+              </div>
+
+              {/* Overlay */}
+              {this.state.open && <div className="overlay" onClick={this.toggleCard}></div>}
             </div>
           </div>
-
         ) : (<></>)}
       </>
     );
