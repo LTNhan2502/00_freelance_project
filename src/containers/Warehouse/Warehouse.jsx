@@ -43,9 +43,10 @@ function Warehouse() {
         }
     }
 
-    const handleSubmitDist = async(productId, refund) => {
+    const handleSubmitDist = async(productId, refund, profitNew) => {
+        
         try {
-            const res = await profitDistribution(productId, userName, refund);
+            const res = await profitDistribution(productId, userName, refund, profitNew);
             if(res.data.data === "Lợi nhuận phân phối thành công"){
                 toast.success("Phân phối thành công")
             }            
@@ -123,7 +124,7 @@ function Warehouse() {
                                     {product.status === 'waiting' ? (
                                         <Row className='warehouse-info'>
                                             <div className="text-end">
-                                                <Button className="mt-3 ms-2 custome-btn" onClick={() => handleSubmitDist(product._id, ((product.price * product.quantity * 0.0024 + product.price).toFixed(2)))}
+                                                <Button className="mt-3 ms-2 custome-btn" onClick={() => handleSubmitDist(product._id, ((product.price * product.quantity * 0.0024 + product.price).toFixed(2)), ((product.price * product.quantity * 0.0024).toFixed(2)))}
                                                     style={{
                                                         backgroundColor: "#0262b0",
                                                         borderRadius: "0.325rem",

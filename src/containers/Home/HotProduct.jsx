@@ -227,7 +227,7 @@ function HotProduct() {
                     </Row>
                     <Row>
                         <Col md={8} className='text-start'><strong>Chiết khấu hôm nay:</strong></Col>
-                        <Col md={4} className="text-end">0 €</Col>
+                        <Col md={4} className="text-end">{`${thisUser?.profit || 0}`} €</Col>
                     </Row>
                 </Card.Body>
             </Card>
