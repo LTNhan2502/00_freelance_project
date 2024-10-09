@@ -13,3 +13,87 @@
     border: 1px solid #dbdfe4 !important;
     font-size: 0.85rem;
 }
+
+.modal-content{
+    background-color: rgba(64, 64, 64, 0.57);
+    backdrop-filter: blur(6px);
+    color: white;
+
+    .received-product-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        border: none;
+        color: white;
+        
+    
+        img {
+            width: 150px;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+    
+        .card-body {
+            padding: 1rem;
+            width: 100%;
+            word-wrap: break-word;  
+            word-break: break-word;
+    
+            .row {
+                flex-wrap: wrap;
+            }
+    
+            .col {
+                text-align: left;
+                width: 100%; 
+            }
+        }
+    
+        .card-body {
+            word-wrap: break-word;  
+            word-break: break-word; 
+            z-index: 2;
+    
+            .warehouse-general{
+                font-size: 14px;
+            }
+    
+            .warehouse-info{
+                font-size: 12px;
+    
+                .text-red{
+                    color: #FF9A2C;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
+
+
+@media (max-width: 768px) {
+    .received-product-card {
+        flex-direction: column !important;
+        align-items: center;
+
+        img {
+            width: 100% !important; 
+            height: auto !important; 
+            max-width: 100%;
+            margin-bottom: 1rem;
+            border-radius: 17px;
+        }
+
+        .card-body {
+            padding: 1rem;
+            width: 100%;
+
+            .row {
+                justify-content: space-between;
+            }
+        }
+    }
+}

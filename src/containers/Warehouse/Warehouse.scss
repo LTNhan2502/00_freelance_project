@@ -1,12 +1,93 @@
-.warehouse-container{
-    width: 90% !important;
-    margin: 0 auto;
+.warehouse-container{ 
+    .received-product-card {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin: 0;
+        border-radius: 13px;
+        position: relative;
+        max-width: 100%;  
+        white-space: normal;  
+        background-color: rgba(64, 64, 64, 0.57);
+        backdrop-filter: blur(6px);
+        color: white;
+        overflow: hidden;
 
-    .received-product-card{
-        background-color: rgba(233, 226, 226, 0.805);
+        .stamp {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 80px;
+            height: 80px;
+            color: #fd4d4d;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-style: solid;
+            border-radius: 50%;
+            transform: rotate(30deg);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
         
-        .warehouse-info{
-            font-size: 0.8rem;
+            .stamp-inside {
+                border-style: solid;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+        
+                span {
+                    position: absolute;
+                    bottom: 40%;
+                    font-size: 10px;
+                    font-weight: bold;
+                    letter-spacing: 1px;
+                }
+            }
+        
+            &.waiting {
+                color: #fd4d4d;
+                border-color: #fd4d4d;
+                .stamp-inside {
+                    border-color: #fd4d4d;
+                    color: #fd4d4d;
+                }
+            }
+        
+            &.success {
+                color: #0bf0f4;
+                border-color: #0bf0f4;
+                .stamp-inside {
+                    border-color: #0bf0f4;
+                    color: #0bf0f4;
+                }
+            } 
+        }
+        
+        
+
+        .card-body {
+            word-wrap: break-word;  
+            word-break: break-word; 
+            z-index: 2;
+
+            .warehouse-general{
+                font-size: 14px;
+            }
+
+            .warehouse-info{
+                font-size: 12px;
+
+                .text-red{
+                    color: #FF9A2C;
+                    font-size: 16px;
+                }
+            }
         }
     }
 }
