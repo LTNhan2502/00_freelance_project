@@ -4,17 +4,37 @@ import './Warehouse.scss';
 import { toast } from 'react-toastify';
 import { getImages } from '../../utils/getImage';
 import { getProductWaiting, profitDistribution } from '../../utils/product';
+import { getOneUserByUsername } from '../../utils/userAPI';
 
 function Warehouse() {
     const userName = localStorage.getItem("user_name");
+    const [userAmount, setUserAmount] = useState(0);
+    const defaultAmount = 0;
     const [savedProducts, setSavedProducts] = useState([]);
     const [imageURLs, setImageURLs] = useState({});
-    const [showModal, setShowModal] = useState(false); // Trạng thái để kiểm soát modal
-    const [selectedProduct, setSelectedProduct] = useState({}); // Lưu thông tin sản phẩm được chọn
+    const [showModal, setShowModal] = useState(false); 
+    const [selectedProduct, setSelectedProduct] = useState({});
 
     useEffect(() => {
         getDistributedProducts();
-    }, []); // Chỉ gọi một lần khi component mount
+        fetchUserAmount();
+    }, []);
+
+    const fetchUserAmount = async () => {
+        if (!userName) {
+          setUserAmount(defaultAmount);
+          return;
+        }
+    
+        try {
+          const res = await getOneUserByUsername(userName);
+          // console.log(res.data.data);
+          setUserAmount(res.data.data.amount || defaultAmount);
+        } catch (error) {
+          console.error("Error fetching user amount:", error);
+          setUserAmount(defaultAmount);
+        }
+      };
 
     const fetchImage = async (imageName) => {
         try {
@@ -56,9 +76,9 @@ function Warehouse() {
 
     const handleCloseDistInfo = () => setShowModal(false); // Đóng modal
 
-    const handleSubmitDist = async (productId, refund, profitNew) => {
+    const handleSubmitDist = async (productId, refund) => {        
         try {
-            const res = await profitDistribution(productId, userName, refund, profitNew);
+            const res = await profitDistribution(productId, userName, refund);
             if (res?.data?.data === "Lợi nhuận phân phối thành công") {
                 toast.success("Phân phối thành công");
                 getDistributedProducts(); // Cập nhật danh sách sản phẩm sau khi phân phối
@@ -232,7 +252,12 @@ function Warehouse() {
                                 <Col className="text-end">
                                     <Button
                                         className="mt-3 custome-btn"
-                                        onClick={() => handleSubmitDist(selectedProduct._id, ((selectedProduct.price * selectedProduct.quantity * 0.0024) + selectedProduct.price)?.toFixed(2), (selectedProduct.price * selectedProduct.quantity * 0.0024)?.toFixed(2))}
+                                        onClick={() => {
+                                            const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
+                                            const refund = (selectedProduct.price * selectedProduct.quantity * 0.0024 + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
+                                            const result = (userAmount - totalDistribution + parseFloat(refund)).toFixed(2); // Tính toán kết quả
+                                            handleSubmitDist(selectedProduct._id, result); // Gọi hàm với kết quả tính toán
+                                        }}
                                         style={{
                                             backgroundColor: "#0262b0",
                                             borderRadius: "0.325rem",
