@@ -49,4 +49,16 @@
         cursor: pointer;
     }
 }
+
+.spinner-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    
+    .custom-spinner{
+        color: white;
+    }
+}
+
+
   

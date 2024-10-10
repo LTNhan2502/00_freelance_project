@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Row, Col, Modal } from 'react-bootstrap';
-import businessImg from '../../assets/076dba666015d94b8004.jpg';
 import { toast } from 'react-toastify';
 import './HotProduct.scss';
 import { getOneUserByUsername } from '../../utils/userAPI';
 import { getAllProduct, updateUsernameToProduct } from '../../utils/product';
 import { getImages } from '../../utils/getImage';
+import businessImg from '../../assets/background-distribute.jpg';
 
 function HotProduct() {
     const [thisUser, setThisUser] = useState(null);
@@ -129,7 +129,7 @@ function HotProduct() {
                     width: "150px"
                 }} 
             >
-                Nhận hàng
+                Nhận
             </Button>
 
             {selectedProduct && (

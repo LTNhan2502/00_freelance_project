@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import "./Level_Member.scss";
 import { getAllMemberPackage } from "../../utils/memberPackageAPI";
 import { getOneUserByUsername, updateMemberToUser } from "../../utils/userAPI";
 import { toast } from "react-toastify";
+import Spinner from 'react-bootstrap/Spinner';
+import "./Level_Member.scss";
+
 
 function Level_Member() {
   const userName = localStorage.getItem("user_name");
@@ -44,7 +46,11 @@ function Level_Member() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="spinner-container">
+        <Spinner animation="border" className="custom-spinner"/>
+    </div>
+  );
 
   return (
     <Container className="full-height-container p-0 mt-3">
