@@ -10,11 +10,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./Info.scss";
 import { getOneUserByUsername } from "../../utils/userAPI";
+import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
-export default function Info({ userAmount, setUserAmount }) {
+export default function Info({ userAmount, setUserAmount, thisUser }) {
   const defaultAmount = 0;
   const userName = localStorage.getItem("user_name");
-
+  const navigate = useNavigate()
   const [showCompanyInfo, setShowCompanyInfo] = useState(false);
 
   const fetchUserAmount = async () => {
@@ -37,7 +39,11 @@ export default function Info({ userAmount, setUserAmount }) {
     fetchUserAmount();
   }, [userName, userAmount]);
 
-  const onClickClick = () => {
+  const handleWithraw = () => {
+    navigate("/withraw")
+  }
+
+  const onShowModalWithraw = () => {
     alert("Click click");
   };
 
@@ -58,7 +64,7 @@ export default function Info({ userAmount, setUserAmount }) {
           </div>
         </Col>
         <Col xs={3}>
-          <div className="box box-click" onClick={() => onClickClick()}>
+          <div className="box box-click" onClick={() => handleWithraw()}>
             <div>
               <FontAwesomeIcon icon={faArrowsDownToLine} size="2x" />
             </div>

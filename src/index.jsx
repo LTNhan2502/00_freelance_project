@@ -10,6 +10,8 @@ import Home from './containers/Home/Home';
 import Login from './containers/Auth/Login';
 import Register from './containers/Auth/Register';
 import Warehouse from './containers/Warehouse/Warehouse';
+import InfoBank from './containers/Bank/InfoBank';
+import Withraw from './containers/Withraw/Withraw';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -39,6 +41,12 @@ root.render(
               <Warehouse />
             </PrivateRoute>
           }/>
+
+          {/* Bank account */}
+          <Route path='bank-account' element={<InfoBank/>}/>
+
+          {/* Withraw */}
+          <Route path='withraw' element={<Withraw/>}/>
         </Route>
       </Routes>      
     </BrowserRouter>

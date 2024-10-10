@@ -51,15 +51,16 @@ function Warehouse() {
         try {
             const res = await getProductWaiting(userName);
             const result = res?.data?.data;
-
+        
             if (result) {
-                setSavedProducts(result);
-
-                const imageFetchPromises = result.map(async (product) => {
-                    const imageUrl = await fetchImage(product.imageProduct);
-                    return { [product._id]: imageUrl };
+                const sortedProducts = sortProducts(result);
+                setSavedProducts(sortedProducts);
+        
+                const imageFetchPromises = sortedProducts.map(async (product) => {
+                const imageUrl = await fetchImage(product.imageProduct);
+                return { [product._id]: imageUrl };
                 });
-
+        
                 const imageResults = await Promise.all(imageFetchPromises);
                 const imagesMap = Object.assign({}, ...imageResults);
                 setImageURLs(imagesMap);
@@ -68,6 +69,31 @@ function Warehouse() {
             console.error("Lỗi khi lấy sản phẩm:", error);
         }
     };
+      
+    
+    const sortProducts = (products) => {
+        return products.sort((a, b) => {
+          // Nếu status là 'waiting', đưa lên đầu
+          if (a.status === 'waiting') return -1;
+          if (b.status === 'waiting') return 1;
+      
+          // Nếu cả hai đều có receiving_time, sắp xếp theo thời gian
+          if (a.receiving_time && b.receiving_time) {
+            const dateA = new Date(a.receiving_time.split(" ")[1].split('/').reverse().join('-') + " " + a.receiving_time.split(" ")[0]);
+            const dateB = new Date(b.receiving_time.split(" ")[1].split('/').reverse().join('-') + " " + b.receiving_time.split(" ")[0]);
+            return dateB - dateA;
+          }
+      
+          // Nếu a không có receiving_time, đưa lên đầu
+          if (!a.receiving_time) return -1;
+      
+          // Nếu b không có receiving_time, đưa lên đầu
+          if (!b.receiving_time) return 1;
+      
+          return 0;
+        });
+    };
+      
 
     const handleShowDistInfo = (product) => {
         setSelectedProduct(product); // Lưu sản phẩm được chọn
@@ -76,9 +102,9 @@ function Warehouse() {
 
     const handleCloseDistInfo = () => setShowModal(false); // Đóng modal
 
-    const handleSubmitDist = async (productId, refund) => {        
+    const handleSubmitDist = async (productId, refund, profit) => {        
         try {
-            const res = await profitDistribution(productId, userName, refund);
+            const res = await profitDistribution(productId, userName, refund, profit);
             if (res?.data?.data === "Lợi nhuận phân phối thành công") {
                 toast.success("Phân phối thành công");
                 getDistributedProducts(); // Cập nhật danh sách sản phẩm sau khi phân phối
@@ -208,7 +234,7 @@ function Warehouse() {
                     >
                         <Card.Img
                             variant="left"
-                            src={imageURLs[selectedProduct._id] || ''} // Sử dụng ảnh từ imageURLs
+                            src={imageURLs[selectedProduct._id] || ''}
                             style={{ width: '150px', height: '100%', objectFit: 'cover' }}
                         />
                         <Card.Body>
@@ -254,9 +280,10 @@ function Warehouse() {
                                         className="mt-3 custome-btn"
                                         onClick={() => {
                                             const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
-                                            const refund = (selectedProduct.price * selectedProduct.quantity * 0.0024 + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
-                                            const result = (userAmount - totalDistribution + parseFloat(refund)).toFixed(2); // Tính toán kết quả
-                                            handleSubmitDist(selectedProduct._id, result); // Gọi hàm với kết quả tính toán
+                                            const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
+                                            const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
+                                            const result = (parseFloat(userAmount) - parseFloat(totalDistribution) + parseFloat(refund)).toFixed(2); // Tính toán kết quả
+                                            handleSubmitDist(selectedProduct._id, result, profit); // Gọi hàm với kết quả tính toán
                                         }}
                                         style={{
                                             backgroundColor: "#0262b0",

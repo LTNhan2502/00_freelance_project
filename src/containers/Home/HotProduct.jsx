@@ -7,8 +7,7 @@ import { getAllProduct, updateUsernameToProduct } from '../../utils/product';
 import { getImages } from '../../utils/getImage';
 import businessImg from '../../assets/background-distribute.jpg';
 
-function HotProduct() {
-    const [thisUser, setThisUser] = useState(null);
+function HotProduct({thisUser, setThisUser}) {
     const [userAmount, setUserAmount] = useState(0);
     const [distProduct, setDistProduct] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -18,9 +17,7 @@ function HotProduct() {
 
     useEffect(() => {        
         fetchUserAmount();
-        fetchProductsNoUsername();
-        console.log(thisUser);
-        
+        fetchProductsNoUsername();        
     }, [userName, isClickReceive]);
 
     const fetchUserAmount = async () => {
@@ -35,6 +32,8 @@ function HotProduct() {
             
             setUserAmount(userData.amount || 0);
             setThisUser(userData);
+            console.log(thisUser);
+            
         } catch (error) {
             console.error("Error fetching user amount:", error);
             setUserAmount(0);
@@ -229,6 +228,18 @@ function HotProduct() {
                         <Col md={8} className='text-start'><strong>Chiết khấu hôm nay:</strong></Col>
                         <Col md={4} className="text-end">{`${thisUser?.profit || 0}`} €</Col>
                     </Row>
+                </Card.Body>
+            </Card>
+
+            <Card className="mt-4 app-rules-card">
+                <Card.Body>
+                    <Row>
+                        <Col md={12} className="text-start">
+                            <p>Khi bạn trở thành thành viên Mercado Libre, bạn sẽ nhận được các mã sản phẩm có liên quan về đơn đặt hàng , bao gồm thông tin sản phẩm chi tiết đơn hàng , giá trị sản phẩm , số lượng ...vv..</p>
+                            <p>Thành viên của Mercado Libre sẽ là nhà trung gian giúp  xác nhận đơn hàng giữa các NHÀ SẢN XUẤT & QUÝ ĐỐI TÁC ( người đặt mua ).</p>
+                            <p>Thành viên của Mercado Libre sẽ là nhà trung gian giúp  xác nhận đơn hàng giữa các NHÀ SẢN XUẤT & QUÝ ĐỐI TÁC ( người đặt mua ).</p>
+                        </Col>
+                    </Row>                    
                 </Card.Body>
             </Card>
         </div>

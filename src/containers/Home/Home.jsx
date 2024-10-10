@@ -9,13 +9,14 @@ import './Home.scss';
 
 const Home = () => {
   const [userAmount, setUserAmount] = useState(0)
-  
+  const [thisUser, setThisUser] = useState(null);
+
   return (
     <Container className="custom-container py-5">
       <Row className="my-4 justify-content-center">
         <Col lg={4} md={6} xs={12} className="mb-4">
           {/* Info */}
-          <Info userAmount={userAmount} setUserAmount={setUserAmount}/>
+          <Info userAmount={userAmount} setUserAmount={setUserAmount} thisUser={thisUser}/>
           
           {/* Cấp thành viên */}
           <Level_Member userAmount={userAmount}/>
@@ -27,7 +28,7 @@ const Home = () => {
             <Col lg={6} className="mb-4"> 
               <Card className="h-100 blur-card">
                 <Card.Body>
-                  <HotProduct />
+                  <HotProduct thisUser={thisUser} setThisUser={setThisUser}/>
                 </Card.Body>
               </Card>
             </Col>
