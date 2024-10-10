@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useNavigate } from 'react-router-dom';
 import { getOneUserByUsername } from '../../utils/userAPI';
 import { createBank, getBankByUserId } from '../../utils/bank';
+import './Withraw.scss';
 
 function Withraw() {
     const userName = localStorage.getItem("user_name")

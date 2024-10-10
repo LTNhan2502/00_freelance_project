@@ -18,6 +18,15 @@ const Navi = () => {
     alert(">>> ", info);
   };
 
+  const handleGoToWithraw = () => {
+    navigate("/withraw")
+    toggleCard()
+  }
+  const handleGoToBankAccount = () => {
+    navigate("/bank-account")
+    toggleCard()
+  }
+
   const onClickLogout = () => {
     localStorage.removeItem("user_name");
     localStorage.removeItem("access_token");
@@ -51,13 +60,9 @@ const Navi = () => {
                 <Card.Body>
                   <ul className="list-unstyled">
                     <li><p onClick={() => alert("Nạp tiền")}>Nạp tiền</p></li>
-                    <li><p onClick={() => alert("Rút tiền")}>Rút tiền</p></li>
+                    <li><p onClick={() => handleGoToWithraw()}>Rút tiền</p></li>
                     <li><p onClick={() => alert("Lịch sử rút tiền")}>Lịch sử rút tiền</p></li>
-                    <li>
-                      <NavLink to={"/bank-account"}>
-                        <p>Thông tin ngân hàng</p>
-                      </NavLink>
-                    </li>
+                    <li><p onClick={() => handleGoToBankAccount()}>Thông tin ngân hàng</p></li>
                     <li><p onClick={() => alert("Địa chỉ")}>Địa chỉ</p></li>
                     <li><p onClick={() => alert("Chuyển đổi ngôn ngữ")}>Chuyển đổi ngôn ngữ</p></li>
                     <li><p onClick={onClickLogout}>Đăng xuất</p></li>

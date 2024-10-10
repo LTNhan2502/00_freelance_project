@@ -137,13 +137,13 @@ function Warehouse() {
 
                                     <Card.Img
                                         variant="left"
-                                        src={imageURLs[product._id] || 'placeholder-image-url'} // Thêm placeholder khi chưa có ảnh
+                                        src={imageURLs[product._id] || 'placeholder-image-url'} 
                                         style={{
                                             width: "150px",
                                             height: "100%",
                                             objectFit: "cover",
                                         }}
-                                        onError={(e) => e.target.src = 'placeholder-image-url'} // Fallback khi lỗi ảnh
+                                        onError={(e) => e.target.src = 'placeholder-image-url'}
                                     />
                                     <Card.Body>
                                         <Card.Title style={{ fontSize: '14px' }}>
