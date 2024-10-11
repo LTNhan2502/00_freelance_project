@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
+import bcrypt from 'bcryptjs';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,10 @@ function Withraw() {
     const [isHaveAccount, setIsHaveAccount] = useState(false)
     const [userBankAccount, setUserBankAccount] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
+
+    const verifyPassword = (inputPassword, hashedPassword) => {
+        return bcrypt.compare(inputPassword, hashedPassword);
+    };
 
     useEffect(() => {
         fetchThisUser()
@@ -59,31 +64,49 @@ function Withraw() {
         },
 
         validationSchema: Yup.object({
-            amount: Yup.string()
-                .required("Không được để trống"),  
+            amount: Yup.number()
+                .required("Không được để trống")
+                .positive("Số tiền phải lớn hơn 0"),  
             passwordBank: Yup.string().required("Không được để trống")          
         }),
 
         onSubmit: async(values) => {
-            const letWithraw = await reqWithdrawal(
-                thisUser._id, 
-                values.amount
-            )
+            verifyPassword(values.passwordBank, thisUser.password)
+                .then(async(isMatch) => {
+                    if(isMatch){
+                        const letWithraw = await reqWithdrawal(
+                            thisUser._id, 
+                            values.amount
+                        )
+                        // Kiểm tra api
+                        console.log(letWithraw); 
+                        
+                        if(letWithraw && letWithraw.data.EC === 0) {
+                            toast.success("Gửi yêu cầu thành công")
+                            console.log("success");
+                            
+                        }else {
+                            console.log("Có lỗi");                            
+                        }
+                    }else{
+                        toast.error("Mật khẩu không khớp")
+                    }
+                })
 
-            // Kiểm tra api
-            console.log(letWithraw); 
-            
-            if(letWithraw && letWithraw.data.EC === 0) {
-                toast.success("Đăng kí thành công")
-                console.log("success");
-                
-              }else {
-                console.log("Có lỗi");
-                
-              }
         }
         
     })
+
+    // Format số tài khoản ngân hàng thành dạng 28****37
+    const formatBankAccount = (accountNumber) => {
+        if (!accountNumber) return 0;
+        const accountStr = accountNumber.toString(); // Chuyển số tài khoản thành chuỗi
+        const firstPart = accountStr.slice(0, 2); // lấy 2 số đầu
+        const lastPart = accountStr.slice(-2); // lấy 2 số cuối
+        const middlePart = '*'.repeat(4); // thay thế phần giữa bằng dấu *
+        return `${firstPart}${middlePart}${lastPart}`;
+    };
+    
 
     const handleShowOrHide = () => {
         setShowPassword(!showPassword)
@@ -138,7 +161,7 @@ function Withraw() {
                                                                 type='text'
                                                                 name='numberBank'
                                                                 placeholder='Số tài khoản'
-                                                                value={ !!isHaveAccount === true ? userBankAccount.numberBank : ""}
+                                                                value={ !!isHaveAccount === true ? formatBankAccount(userBankAccount.numberBank) : ""}
                                                                 disabled
                                                             />
                                                         </Form.Group>
