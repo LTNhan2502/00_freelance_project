@@ -3,12 +3,11 @@ import { Card, Button, Row, Col, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import './HotProduct.scss';
 import { getOneUserByUsername } from '../../utils/userAPI';
-import { getAllProduct, updateUsernameToProduct } from '../../utils/product';
+import { getAllProduct, profitDistribution, updateUsernameToProduct } from '../../utils/product';
 import { getImages } from '../../utils/getImage';
 import businessImg from '../../assets/background-distribute.jpg';
 
-function HotProduct({thisUser, setThisUser}) {
-    const [userAmount, setUserAmount] = useState(0);
+function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
     const [distProduct, setDistProduct] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -80,10 +79,14 @@ function HotProduct({thisUser, setThisUser}) {
         setShowModal(true);
     };
 
-    const handleReceive = async () => {
+    const handleReceive = async (productId, refund, profit) => {
         try {
+            const res = await profitDistribution(productId, userName, refund, profit);
             await updateUsernameToProduct(selectedProduct._id, userName);
-            toast.success(`Nhận thành công sản phẩm: ${selectedProduct.productName}`);
+
+            setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
+
+            toast.success(`Phân phối thành công sản phẩm: ${selectedProduct.productName}`);
             setIsClickReceive(thisUser.isDistribute)
             console.log(isClickReceive);
             
@@ -120,7 +123,7 @@ function HotProduct({thisUser, setThisUser}) {
             <Button
                 variant="primary"
                 className="mt-3"
-                onClick={() => !thisUser?.memberId ? handleReject() : handleReceivable()}
+                onClick={() => !thisUser?.memberId ? handleReject() : handleClickReceive()}
                 style={{
                     backgroundColor: "#0262b0",
                     borderRadius: "0.325rem",
@@ -195,7 +198,13 @@ function HotProduct({thisUser, setThisUser}) {
                                         <Button variant="danger" className="mt-3" onClick={() => handleCloseDistInfo()}>
                                             Huỷ
                                         </Button>
-                                        <Button variant="primary" className="mt-3 ms-2" onClick={() => handleReceive()}>
+                                        <Button variant="primary" className="mt-3 ms-2" 
+                                            onClick={() => {
+                                                const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
+                                                const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
+                                                const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
+                                                const result = (parseFloat(userAmount) - parseFloat(totalDistribution) + parseFloat(refund)).toFixed(2); // Tính toán kết quả
+                                                handleReceive(selectedProduct._id, result, profit)}}>
                                             Phân phối
                                         </Button>
                                     </div>

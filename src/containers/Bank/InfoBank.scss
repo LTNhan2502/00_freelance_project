@@ -7,8 +7,6 @@
     background-color: rgba(64, 64, 64, 0.57); 
     backdrop-filter: blur(6px);
     border-radius: 17px;
-
-    
 }
 
 .left-col {
@@ -20,6 +18,17 @@
     height: 100%;
     object-fit: cover;
     border-radius: 17px 0 0 17px;
+}
+
+.backArrow{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
 }
 
 .ct-card {
@@ -41,9 +50,7 @@
     box-shadow: 5px 8px 10px #272c3e, 0 0 10px #272c3e;
 }
 
-.bank-linking-container {
-    padding: 20px;
-}
+
 
 @media (max-width: 768px) {
     .bank-image {

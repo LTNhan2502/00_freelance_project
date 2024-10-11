@@ -1,0 +1,23 @@
+.user-amount{
+    font-weight: normal;
+    .fs-12{
+        font-size: 12px;
+    }
+
+    .fs-15{
+        font-size: 15px;
+    }
+}
+
+.withraw-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0 17px 17px 0;
+}
+
+@media (max-width: 768px) {
+    .withraw-image {
+        display: none;
+    }
+}

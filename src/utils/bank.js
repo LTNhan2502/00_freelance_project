@@ -10,6 +10,12 @@ const getBankByUserId = (userId) => {
     const URL_API = "/v1/api/getBankByUserId";
     const data = { userId }
     return instance.post(URL_API, data);
-    }
+}
 
-export { createBank, getBankByUserId }
+const reqWithdrawal = (userId, moneyOut) => {
+    const URL_API = "/v1/api/reqWithdrawal";
+    const data = { userId, moneyOut }
+    return instance.post(URL_API, data);
+}
+
+export { createBank, getBankByUserId, reqWithdrawal }

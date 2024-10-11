@@ -18,10 +18,6 @@ const Navi = () => {
     alert(">>> ", info);
   };
 
-  const handleGoToWithraw = () => {
-    navigate("/withraw")
-    toggleCard()
-  }
   const handleGoToBankAccount = () => {
     navigate("/bank-account")
     toggleCard()
@@ -59,8 +55,6 @@ const Navi = () => {
               <Card className="info-card">
                 <Card.Body>
                   <ul className="list-unstyled">
-                    <li><p onClick={() => alert("Nạp tiền")}>Nạp tiền</p></li>
-                    <li><p onClick={() => handleGoToWithraw()}>Rút tiền</p></li>
                     <li><p onClick={() => alert("Lịch sử rút tiền")}>Lịch sử rút tiền</p></li>
                     <li><p onClick={() => handleGoToBankAccount()}>Thông tin ngân hàng</p></li>
                     <li><p onClick={() => alert("Địa chỉ")}>Địa chỉ</p></li>

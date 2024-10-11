@@ -1,164 +1,220 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Col, Container, Row } from 'react-bootstrap'
+import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from 'react-router-dom';
 import { getOneUserByUsername } from '../../utils/userAPI';
-import { createBank, getBankByUserId } from '../../utils/bank';
+import { getBankByUserId, reqWithdrawal } from '../../utils/bank';
+import bankAccountImg from "../../assets/withraw-img.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './Withraw.scss';
+import { toast } from 'react-toastify';
 
 function Withraw() {
     const userName = localStorage.getItem("user_name")
     const navigate = useNavigate()
     const [thisUser, setThisUser] = useState(null)
     const [isHaveAccount, setIsHaveAccount] = useState(false)
+    const [userBankAccount, setUserBankAccount] = useState(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         fetchThisUser()
-        fetchIsHaveAccount()
-    }, [])
+    }, []) 
 
-    const fetchIsHaveAccount = async() => {
-        const res = await getBankByUserId(thisUser._id)
-        if(res.data.data === null){
-            setIsHaveAccount(false)
-        }else{
-            setIsHaveAccount(true)
-        }
-    }
-
+    
     const fetchThisUser = async() => {
         try {
             const res = await getOneUserByUsername(userName)
             const userData = res.data.data
-
+            
             setThisUser(userData)
+            console.log("User data: ",userData);
+            
+            fetchIsHaveAccount(userData._id);
         } catch (error) {
             console.log("Error fetching: ", error);       
         }
     }
-
+    
+    const fetchIsHaveAccount = async(userId) => {
+        const res = await getBankByUserId(userId)
+        const result = res.data.data
+        console.log(result);
+        
+        if(result === null){
+            setIsHaveAccount(false)
+            setUserBankAccount(null)
+        }else{
+            setIsHaveAccount(true)
+            setUserBankAccount(result)
+        }
+    }
+    
     const formik = useFormik({
-        initialValues: {
-            nameBank: "",
-            userBank: "",
-            numberBank: ""
+        initialValues: {            
+            amount: "",
+            passwordBank: ""
         },
 
         validationSchema: Yup.object({
-            nameBank: Yup.string()                
-                .required("Không được để trống"),
-            userBank: Yup.string()                
-                .required("Không được để trống"),
-            numberBank: Yup.string().required("Không được để trống"),            
+            amount: Yup.string()
+                .required("Không được để trống"),  
+            passwordBank: Yup.string().required("Không được để trống")          
         }),
 
         onSubmit: async(values) => {
-            const registerBankAPI = await createBank(
-                values.nameBank, 
-                values.userBank, 
-                values.numberBank, 
-                thisUser._id
+            const letWithraw = await reqWithdrawal(
+                thisUser._id, 
+                values.amount
             )
 
             // Kiểm tra api
-            console.log(registerBankAPI);
+            console.log(letWithraw); 
             
-            if(registerBankAPI && registerBankAPI.data.EC === 0) {
+            if(letWithraw && letWithraw.data.EC === 0) {
                 toast.success("Đăng kí thành công")
+                console.log("success");
                 
               }else {
-                console.log("Hình như lỗi ní ơi");
+                console.log("Có lỗi");
                 
               }
         }
+        
     })
 
-    const handleNavigate = () => {
+    const handleShowOrHide = () => {
+        setShowPassword(!showPassword)
+    }
+
+    const handleGoToBankAccount = () => {
         navigate("/bank-account")
     }
+
+    const handleGoToHome = () => {
+        navigate("/home")
+    }
+
     return (
-        <Container className='custom-container container py-5'>
-            <Row className='my-4 justify-content-center'>
-                <Col className='mb-4'>
-                    <Card className='mt-4'>
-                        <Card.Body>
-                            <Row>
-                                <Col xs={12}>
-                                    <div className='login-container'>
-                                        {isHaveAccount === false ? (
-                                            <>
-                                                Bạn chưa điền thông tin ngân hàng. Vui lòng click vào 
-                                                <span 
-                                                    style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} 
-                                                    onClick={handleNavigate}
-                                                >
-                                                    Tại đây
-                                                </span>
-                                                để điền thông tin.
-                                        </>
-                                        ) : (
-                                            <form onSubmit={formik.handleSubmit}>
-                                                <div className='input-group'>
-                                                    <div className='input-container'>
-                                                        <input
-                                                            type='text'
-                                                            name='nameBank'
-                                                            placeholder='Tên ngân hàng'
-                                                            value={formik.values.nameBank}
-                                                            onChange={formik.handleChange}
-                                                        />
-                                                    </div>
-                                                    {formik.touched.nameBank && formik.errors.nameBank ? (
-                                                        <small className="error">{formik.errors.nameBank}</small>
-                                                    ) : (
-                                                        <small>&nbsp;</small>
-                                                    )}
-                                                </div>
-                                                <div className='input-group'>
-                                                    <div className='input-container'>
-                                                        <input
-                                                            type='text'
-                                                            name='numberBank'
-                                                            placeholder='Số tài khoản'
-                                                            value={formik.values.numberBank}
-                                                            onChange={formik.handleChange}
-                                                        />
-                                                    </div>
-                                                    {formik.touched.numberBank && formik.errors.numberBank ? (
-                                                        <small className="error">{formik.errors.numberBank}</small>
-                                                    ) : (
-                                                        <small>&nbsp;</small>
-                                                    )}
-                                                </div>
-                                                <div className='input-group'>
-                                                    <div className='input-container'>
-                                                        <input
-                                                            type='text'
-                                                            name='userBank'
-                                                            placeholder='Tên chủ thẻ'
-                                                            value={formik.values.userBank}
-                                                            onChange={formik.handleChange}
-                                                        />
-                                                    </div>
-                                                    {formik.touched.userBank && formik.errors.userBank ? (
-                                                        <small className="error">{formik.errors.userBank}</small>
-                                                    ) : (
-                                                        <small>&nbsp;</small>
-                                                    )}
-                                                </div>
-    
-                                                <input className='btn-login' type='submit' value="Submit"></input>
-                                            </form>
-                                        )}
-                                    </div>
-                                </Col>
+        <Container className='custom-container-bank-account py-5'>
+            <Row className='my-4 justify-content-center custom-row'>
+                <Card className="ct-bank-card"> 
+                    <Row>
+                        <Col xs={12} md={6} className='p-4 custom-bank-account-col'>
+                            <Row className='backArrow'>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <span onClick={handleGoToHome}>
+                                        <FontAwesomeIcon icon={faAngleLeft}/> Rút tiền
+                                    </span>
+                                    <span className='user-amount'>
+                                        <div className='fs-12'>Số dư (€)</div>
+                                        <div className='fs-15'>{thisUser?.amount || 0} €</div>
+                                    </span>
+                                </div>
                             </Row>
-                        </Card.Body>
-                    </Card>
-                </Col>
+                            <Card className='ct-card'>
+                                <Card.Body>
+                                    <Row>
+                                        <Col xs={12}>
+                                            <div className='bank-linking-container'>
+                                                {isHaveAccount ? (
+                                                    <Form onSubmit={formik.handleSubmit}>
+                                                        <Form.Group className='mb-3'>
+                                                            <Form.Label>Tên chủ thẻ</Form.Label>
+                                                            <Form.Control
+                                                                type='text'
+                                                                name='userBank'
+                                                                placeholder='Tên chủ thẻ'
+                                                                value={ !!isHaveAccount === true ? userBankAccount.userBank : ""}
+                                                                disabled
+                                                            />
+                                                        </Form.Group>
+
+                                                        <Form.Group className='mb-3 p-relative'>
+                                                            <Form.Label>Số tài khoản</Form.Label>
+                                                            <Form.Control
+                                                                type='text'
+                                                                name='numberBank'
+                                                                placeholder='Số tài khoản'
+                                                                value={ !!isHaveAccount === true ? userBankAccount.numberBank : ""}
+                                                                disabled
+                                                            />
+                                                        </Form.Group>
+
+                                                        <Form.Group className='mb-3'>
+                                                            <Form.Label>Số tiền</Form.Label>
+                                                            <Form.Control
+                                                                type='number'
+                                                                name='amount'
+                                                                placeholder='Số tiền'
+                                                                value={formik.values.amount}
+                                                                onChange={formik.handleChange}
+                                                                isInvalid={formik.touched.amount && formik.errors.amount}
+                                                            />
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {formik.errors.amount}
+                                                            </Form.Control.Feedback>  
+                                                        </Form.Group>
+
+                                                        <Form.Group className='mb-3'>
+                                                            <Form.Label>Mật khẩu</Form.Label>
+                                                            <InputGroup>                                                            
+                                                                <Form.Control
+                                                                    type={showPassword ? "text" : "password"}
+                                                                    name='passwordBank'
+                                                                    placeholder='Mật khẩu'
+                                                                    value={formik.values.passwordBank}
+                                                                    onChange={formik.handleChange}
+                                                                    isInvalid={formik.touched.passwordBank && formik.errors.passwordBank}
+                                                                />
+                                                                <InputGroup.Text style={{ cursor: "pointer", borderTopRightRadius: "0.375rem", borderBottomRightRadius: "0.375rem" }}>
+                                                                    <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} onClick={() => handleShowOrHide()}/>
+                                                                </InputGroup.Text>
+                                                                <Form.Control.Feedback type="invalid">
+                                                                    {formik.errors.passwordBank}
+                                                                </Form.Control.Feedback>
+                                                            </InputGroup>
+                                                        </Form.Group>
+
+                                                        <Button className='btn-login w-100' type='submit' variant='primary'>
+                                                            Rút tiền
+                                                        </Button>
+                                                    </Form>
+                                                ) : (
+                                                    <div>
+                                                        Bạn chưa điền thông tin ngân hàng. Vui lòng click vào  
+                                                        <span
+                                                            style={{
+                                                                color: "#FFD700",
+                                                                cursor: "pointer",
+                                                                fontSize: "15px",
+                                                                padding: "7px"
+                                                            }}
+                                                            onClick={handleGoToBankAccount}
+                                                        >Tại đây</span>
+                                                        để đi điền thông tin
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col xs={12} md={6} className="right-col">
+                            <img 
+                                src={bankAccountImg}
+                                alt="Bank Info Image" 
+                                className="withraw-image"
+                            />
+                        </Col>
+                    </Row>
+                </Card>
             </Row>
         </Container>
+
     )
 }
 

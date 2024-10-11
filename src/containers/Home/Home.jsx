@@ -28,7 +28,7 @@ const Home = () => {
             <Col lg={6} className="mb-4"> 
               <Card className="h-100 blur-card">
                 <Card.Body>
-                  <HotProduct thisUser={thisUser} setThisUser={setThisUser}/>
+                  <HotProduct thisUser={thisUser} setThisUser={setThisUser} userAmount={userAmount} setUserAmount={setUserAmount}/>
                 </Card.Body>
               </Card>
             </Col>

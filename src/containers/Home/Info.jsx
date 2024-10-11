@@ -43,10 +43,6 @@ export default function Info({ userAmount, setUserAmount, thisUser }) {
     navigate("/withraw")
   }
 
-  const onShowModalWithraw = () => {
-    alert("Click click");
-  };
-
   const handleCloseCompanyInfo = () => setShowCompanyInfo(false);
   const handleShowCompanyInfo = () => setShowCompanyInfo(true);
 
