@@ -1,17 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
-import { getImages } from '../../utils/getImage';
-import { getProductWaiting } from '../../utils/product';
+import { Card, Col, Container, Row, Button, Modal } from 'react-bootstrap';
 import './Warehouse.scss';
+import { toast } from 'react-toastify';
+import { getImages } from '../../utils/getImage';
+import { getProductWaiting, profitDistribution } from '../../utils/product';
+import { getOneUserByUsername } from '../../utils/userAPI';
 
 function Warehouse() {
     const userName = localStorage.getItem("user_name");
+    const [userAmount, setUserAmount] = useState(0);
+    const defaultAmount = 0;
     const [savedProducts, setSavedProducts] = useState([]);
     const [imageURLs, setImageURLs] = useState({});
+    const [showModal, setShowModal] = useState(false); 
+    const [selectedProduct, setSelectedProduct] = useState({});
 
     useEffect(() => {
         getDistributedProducts();
+        fetchUserAmount();
     }, []);
+
+    const fetchUserAmount = async () => {
+        if (!userName) {
+          setUserAmount(defaultAmount);
+          return;
+        }
+    
+        try {
+          const res = await getOneUserByUsername(userName);
+          // console.log(res.data.data);
+          setUserAmount(res.data.data.amount || defaultAmount);
+        } catch (error) {
+          console.error("Error fetching user amount:", error);
+          setUserAmount(defaultAmount);
+        }
+      };
 
     const fetchImage = async (imageName) => {
         try {
@@ -71,6 +94,28 @@ function Warehouse() {
         });
     };
       
+
+    const handleShowDistInfo = (product) => {
+        setSelectedProduct(product); // Lưu sản phẩm được chọn
+        setShowModal(true); // Mở modal
+    };
+
+    const handleCloseDistInfo = () => setShowModal(false); // Đóng modal
+
+    const handleSubmitDist = async (productId, refund, profit) => {        
+        try {
+            const res = await profitDistribution(productId, userName, refund, profit);
+            if (res?.data?.data === "Lợi nhuận phân phối thành công") {
+                toast.success("Phân phối thành công");
+                getDistributedProducts(); 
+            }
+            handleCloseDistInfo();
+        } catch (error) {
+            console.log("Error fetching: ", error);
+            toast.error("Phân phối thất bại");
+        }
+    };
+
     return (
         <Container className="mt-1 py-5 warehouse-container">
             <h4 className="text-center mb-4" style={{ color: "white" }}>Lịch sử phân phối</h4>
@@ -141,7 +186,25 @@ function Warehouse() {
                                             <Col className="text-end">
                                                 <Card.Text className='text-red'>{refund} €</Card.Text>
                                             </Col>
-                                        </Row>                                        
+                                        </Row>
+                                        {product.status === 'waiting' && (
+                                            <Row className='warehouse-info'>
+                                                <div className="text-end">
+                                                    <Button
+                                                        className="mt-3 ms-2 custome-btn"
+                                                        onClick={() => handleShowDistInfo(product)} // Mở modal
+                                                        style={{
+                                                            backgroundColor: "#0262b0",
+                                                            borderRadius: "0.325rem",
+                                                            fontSize: "12px",
+                                                            width: "150px"
+                                                        }}
+                                                    >
+                                                        Gửi phân phối
+                                                    </Button>
+                                                </div>
+                                            </Row>
+                                        )}
                                     </Card.Body>
                                 </Card>
                             </Col>
@@ -151,6 +214,92 @@ function Warehouse() {
                     <h5 className="text-center">Chưa nhận sản phẩm nào</h5>
                 )}
             </Row>
+
+            {/* Modal thông tin sản phẩm */}
+            <Modal show={showModal} onHide={handleCloseDistInfo} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Thông tin sản phẩm</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card className="h-100 received-product-card"
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            width: "100%",
+                            margin: "0",
+                            border: "none",
+                            backgroundColor: "transparent",
+                            backdropFilter: "blur(6px)",
+                        }}
+                    >
+                        <Card.Img
+                            variant="left"
+                            src={imageURLs[selectedProduct._id] || ''}
+                            style={{ width: '150px', height: '100%', objectFit: 'cover' }}
+                        />
+                        <Card.Body>
+                            <Card.Title>
+                                <div>Mã: {selectedProduct._id}</div>
+                                <div className="mt-2">Tên: {selectedProduct.productName}</div>
+                            </Card.Title>
+                            <Row>
+                                <Col>
+                                    <Card.Text>{selectedProduct.price?.toFixed(2)} €</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>X{selectedProduct.quantity}</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info mt-2'>
+                                <Col>
+                                    <Card.Text>Tổng phân phối</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>{(selectedProduct.price * selectedProduct.quantity)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col>
+                                    <Card.Text>Lợi nhuận</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text>{(selectedProduct.price * selectedProduct.quantity * 0.0024)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col>
+                                    <Card.Text>Hoàn nhập</Card.Text>
+                                </Col>
+                                <Col className="text-end">
+                                    <Card.Text className='fs-4 text-red'>{((selectedProduct.price * selectedProduct.quantity * 0.0024) + selectedProduct.price)?.toFixed(2)} €</Card.Text>
+                                </Col>
+                            </Row>
+                            <Row className='warehouse-info'>
+                                <Col className="text-end">
+                                    <Button
+                                        className="mt-3 custome-btn"
+                                        onClick={() => {
+                                            const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
+                                            const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
+                                            const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
+                                            const result = (parseFloat(userAmount) - parseFloat(totalDistribution) + parseFloat(refund)).toFixed(2); // Tính toán kết quả
+                                            handleSubmitDist(selectedProduct._id, result, profit); // Gọi hàm với kết quả tính toán
+                                        }}
+                                        style={{
+                                            backgroundColor: "#0262b0",
+                                            borderRadius: "0.325rem",
+                                            fontSize: "12px",
+                                            width: "150px"
+                                        }}
+                                    >
+                                        Xác nhận phân phối
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Modal.Body>
+            </Modal>
         </Container>
     );
 }
