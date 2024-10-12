@@ -17,20 +17,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
     useEffect(() => {        
         fetchUserAmount();
         fetchProductsNoUsername();        
-    }, [userName, isClickReceive]);
-
-    // useEffect(() => {
-    //     if (selectedProduct && selectedProduct._id) {
-    //         // Chỉ gọi handleReceive khi selectedProduct có đầy đủ dữ liệu (bao gồm _id)
-    //         const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
-    //         const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
-    //         const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
-    
-    //         // Gọi handleReceive với các giá trị tính toán
-    //         handleReceive(selectedProduct._id, refund, profit);
-    //     }
-    // }, [selectedProduct]); // Chỉ chạy khi selectedProduct thay đổi
-    
+    }, [userName, isClickReceive]);   
 
     const fetchUserAmount = async () => {
         if (!userName) {
@@ -61,7 +48,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
             console.error("Fetch thất bại:", error);
         }
     };
-
+    
     const fetchImage = async (imageName) => {
         try {
             const result = await getImages(imageName);
@@ -69,6 +56,20 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
         } catch (error) {
             console.error("Lỗi khi lấy hình ảnh:", error);
             return null;
+        }
+    };
+
+    // Kiểm tra xem user có thể nhận hàng tiếp được không
+    const handleReceivable = async () => {       
+        const isCurrentDist = distProduct.filter(
+            (product) => product.userName === userName && product.status === "waiting"
+        );
+        
+        if (isCurrentDist.length !== 0 || isClickReceive === true) {
+            toast.error("Có đơn hàng chưa thanh toán, vui lòng thanh toán trước!");
+            return;
+        }else{
+            handleClickReceive(); // Thực hiện nhận phân phối
         }
     };
 
@@ -82,6 +83,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
             return;
         }
     
+        // Lấy random 1 sản phẩm trong data
         const randomIndex = Math.floor(Math.random() * productsCanDist.length);
         const selectedProduct = productsCanDist[randomIndex];
     
@@ -92,7 +94,8 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
         setSelectedProduct({ ...selectedProduct, imageUrl }); 
         setShowModal(true);
     };
-
+    
+    // Nút huỷ trong modal
     const handleCancelReceive = () => {
         if (selectedProduct && selectedProduct._id) {
             const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
@@ -107,29 +110,33 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
         setShowModal(false);
     };
     
-
+    // Nhận sản phẩm, gán sở hữu cho user
     const handleReceive = async (productId, refund, profit) => {
         try {
-            const res = await profitDistribution(productId, userName, refund, profit);
             await updateUsernameToProduct(selectedProduct._id, userName);
-
-            setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
+            setIsClickReceive(thisUser.isDistribute)
 
             toast.success(`Nhận thành công sản phẩm: ${selectedProduct.productName}`);
-            setIsClickReceive(thisUser.isDistribute)
-            console.log(isClickReceive);            
+            console.log(isClickReceive);
+            
+            setShowModal(false);
         } catch (error) {
             toast.error("Cập nhật sở hữu sản phẩm thất bại");
             console.error("Lỗi cập nhật sở hữu:", error);
         }
     };
     
+    // Thực hiện phân phối (nút phân phối trong modal)
     const handleReceiveDist = async (productId, refund, profit) => {
         try {
             const res = await profitDistribution(productId, userName, refund, profit);
             await updateUsernameToProduct(selectedProduct._id, userName);
 
+            // Cập nhật số dư user
             setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
+            // Gọi lại fetchThisUser để cập nhật lại thông tin user
+            await fetchUserAmount();
+            // Thực hiện phân phối
             handleSubmitDist(productId, refund, profit)
 
             console.log(isClickReceive);            
@@ -139,6 +146,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
         }
     };
     
+    // Phân phối sản phẩm (chuyển trạng thái sang success)
     const handleSubmitDist = async (productId, refund, profit) => {        
         try {
             const res = await profitDistribution(productId, userName, refund, profit);
@@ -146,25 +154,12 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
                 toast.success("Phân phối thành công");
             }
             handleCloseDistInfo();
-        } catch (error) {
+        } catch (error) { 
             console.log("Error fetching: ", error);
             toast.error("Phân phối thất bại");
         }
     };
     
-
-    const handleReceivable = async () => {       
-        const isCurrentDist = distProduct.filter(
-            (product) => product.userName === userName && product.status === "waiting"
-        );
-        
-        if (isCurrentDist.length !== 0 || isClickReceive === true) {
-            toast.error("Có đơn hàng chưa thanh toán, vui lòng thanh toán trước!");
-            return;
-        }else{
-            handleClickReceive(); // Thực hiện nhận phân phối
-        }
-    };
 
     const handleReject = () => {
         toast.error("Bạn chưa mua gói");
