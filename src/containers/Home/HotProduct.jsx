@@ -124,6 +124,21 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
         }
     };
     
+    const handleReceiveDist = async (productId, refund, profit) => {
+        try {
+            const res = await profitDistribution(productId, userName, refund, profit);
+            await updateUsernameToProduct(selectedProduct._id, userName);
+
+            setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
+            handleSubmitDist(productId, refund, profit)
+
+            console.log(isClickReceive);            
+        } catch (error) {
+            toast.error("Cập nhật sở hữu sản phẩm thất bại");
+            console.error("Lỗi cập nhật sở hữu:", error);
+        }
+    };
+    
     const handleSubmitDist = async (productId, refund, profit) => {        
         try {
             const res = await profitDistribution(productId, userName, refund, profit);
@@ -136,6 +151,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
             toast.error("Phân phối thất bại");
         }
     };
+    
 
     const handleReceivable = async () => {       
         const isCurrentDist = distProduct.filter(
@@ -244,7 +260,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
                                                 const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
                                                 const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
                                                 const result = (parseFloat(userAmount) - parseFloat(totalDistribution) + parseFloat(refund)).toFixed(2); // Tính toán kết quả
-                                                handleSubmitDist(selectedProduct._id, result, profit)}
+                                                handleReceiveDist(selectedProduct._id, result, profit)}
                                             }
                                         >
                                             Phân phối
