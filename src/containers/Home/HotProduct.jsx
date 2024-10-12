@@ -12,32 +12,42 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [isClickReceive, setIsClickReceive] = useState(null)
+    // State này là để kiểm soát không cho thực hiện hành động 2 lần
+    const [isProcessing, setIsProcessing] = useState(false); 
     const userName = localStorage.getItem("user_name");
 
-    useEffect(() => {        
-        fetchUserAmount();
-        fetchProductsNoUsername();        
-    }, [userName, isClickReceive]);   
+    useEffect(() => {
+        if (userName) {
+            fetchUserAmount(); 
+            fetchProductsNoUsername();
+        } 
+    }, [userName]);  
 
     const fetchUserAmount = async () => {
         if (!userName) {
             setUserAmount(0);
             return;
         }
-
+    
         try {
             const res = await getOneUserByUsername(userName);
             const userData = res.data.data || {};
-            
-            setUserAmount(userData.amount || 0);
+    
+            // Sử dụng phương pháp nhân chia để đảm bảo độ chính xác
+            const rawAmount = userData.amount || 0;
+            const fixedAmount = Math.round((rawAmount + Number.EPSILON) * 100) / 100;
+    
+            setUserAmount(fixedAmount);
             setThisUser(userData);
             console.log(thisUser);
-            
+    
         } catch (error) {
             console.error("Error fetching user amount:", error);
             setUserAmount(0);
         }
     };
+    
+    
     
     const fetchProductsNoUsername = async () => {
         try {
@@ -96,22 +106,22 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
     };
     
     // Nút huỷ trong modal
-    const handleCancelReceive = () => {
-        if (selectedProduct && selectedProduct._id) {
-            const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
-            const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
-            const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
+    // const handleCancelReceive = () => {
+    //     if (selectedProduct && selectedProduct._id) {
+    //         const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
+    //         const profit = Math.round((selectedProduct.price * selectedProduct.quantity * 0.0024 + Number.EPSILON) * 100) / 100; // Lợi nhuận
+    //         const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
     
-            // Gọi handleReceive với các giá trị tính toán
-            handleReceive(selectedProduct._id, refund, profit);
-        }
+    //         // Gọi handleReceive với các giá trị tính toán
+    //         handleReceive(selectedProduct._id, refund, profit);
+    //     }
     
-        // Đóng modal
-        setShowModal(false);
-    };
+    //     // Đóng modal
+    //     setShowModal(false);
+    // };
     
     // Nhận sản phẩm, gán sở hữu cho user
-    const handleReceive = async (productId, refund, profit) => {
+    const handleCancelReceive = async () => {
         try {
             await updateUsernameToProduct(selectedProduct._id, userName);
             setIsClickReceive(thisUser.isDistribute)
@@ -127,22 +137,48 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
     };
     
     // Thực hiện phân phối (nút phân phối trong modal)
+    // const handleReceiveDist = async (productId, refund, profit) => {
+    //     try {
+    //         const res = await profitDistribution(productId, userName, refund, profit);
+    //         await updateUsernameToProduct(selectedProduct._id, userName);
+
+    //         // Cập nhật số dư user
+    //         setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
+    //         // Gọi lại fetchThisUser để cập nhật lại thông tin user
+    //         await fetchUserAmount();
+    //         // Thực hiện phân phối
+    //         handleSubmitDist(productId, refund, profit)
+
+    //         console.log(isClickReceive);            
+    //     } catch (error) {
+    //         toast.error("Cập nhật sở hữu sản phẩm thất bại");
+    //         console.error("Lỗi cập nhật sở hữu:", error);
+    //     }
+    // };
+
+    // Thực hiện phân phối (nút phân phối trong modal)
     const handleReceiveDist = async (productId, refund, profit) => {
+        if (isProcessing) return; // Nếu đang trong quá trình xử lý thì không thực hiện nữa
+        setIsProcessing(true); // Đặt cờ báo là đang xử lý
+    
         try {
             const res = await profitDistribution(productId, userName, refund, profit);
             await updateUsernameToProduct(selectedProduct._id, userName);
-
+    
             // Cập nhật số dư user
             setUserAmount((prevAmount) => prevAmount - selectedProduct.price + parseFloat(refund));
-            // Gọi lại fetchThisUser để cập nhật lại thông tin user
+    
+            // Gọi lại fetchUserAmount để cập nhật lại thông tin user
             await fetchUserAmount();
+    
             // Thực hiện phân phối
-            handleSubmitDist(productId, refund, profit)
-
-            console.log(isClickReceive);            
+            handleSubmitDist(productId, refund, profit);
+    
         } catch (error) {
             toast.error("Cập nhật sở hữu sản phẩm thất bại");
             console.error("Lỗi cập nhật sở hữu:", error);
+        } finally {
+            setIsProcessing(false); // Kết thúc quá trình xử lý
         }
     };
     
@@ -252,7 +288,7 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
                                         <Button variant="primary" className="mt-3 ms-2" 
                                             onClick={() => {
                                                 const totalDistribution = (selectedProduct.price * selectedProduct.quantity).toFixed(2); // Tổng phân phối
-                                                const profit = (selectedProduct.price * selectedProduct.quantity * 0.0024).toFixed(2); // Lợi nhuận
+                                                const profit = Math.round((selectedProduct.price * selectedProduct.quantity * 0.0024 + Number.EPSILON) * 100) / 100; // Lợi nhuận
                                                 const refund = (parseFloat(profit) + parseFloat(totalDistribution)).toFixed(2); // Hoàn nhập
                                                 const result = (parseFloat(userAmount) - parseFloat(totalDistribution) + parseFloat(refund)).toFixed(2); // Tính toán kết quả
                                                 handleReceiveDist(selectedProduct._id, result, profit)}

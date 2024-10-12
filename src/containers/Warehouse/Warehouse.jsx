@@ -27,9 +27,17 @@ function Warehouse() {
         }
     
         try {
-          const res = await getOneUserByUsername(userName);
-          // console.log(res.data.data);
-          setUserAmount(res.data.data.amount || defaultAmount);
+        //   const res = await getOneUserByUsername(userName);
+        //   // console.log(res.data.data);
+        //   setUserAmount(res.data.data.amount || defaultAmount);
+
+            const res = await getOneUserByUsername(userName);
+            const userData = res.data.data || {};
+    
+            const rawAmount = userData.amount || 0;
+            const fixedAmount = Math.round((rawAmount + Number.EPSILON) * 100) / 100;
+    
+            setUserAmount(fixedAmount);
         } catch (error) {
           console.error("Error fetching user amount:", error);
           setUserAmount(defaultAmount);

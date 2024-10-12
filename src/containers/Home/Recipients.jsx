@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 
 export default function Recipients() {
     // Giả lập state dữ liệu người dùng
@@ -59,21 +59,29 @@ export default function Recipients() {
     }, []);
 
     return (
-        <Card className="h-100 blur-card ms-lg-3 mb-3 mb-lg-0 text-center">
-            <Card.Body>
-                <Card.Title>Người dùng trúng thưởng</Card.Title>
-                <div>
-                    {recipients && recipients.length > 0 ? (
-                        recipients.map((recipient) => (
-                            <div key={recipient.id}>
-                                {formatDate()} chúc mừng {formatName(recipient.name)} nhận {recipient.profit} €
-                            </div>
-                        ))
-                    ) : (
-                        <p>Đang cập nhật...</p>
-                    )}
-                </div>
-            </Card.Body>
-        </Card>
+        <Container className="full-height-container p-0 mt-3">
+            <h3 className="text-white fs-6 fw-bold"
+                style={{
+                    paddingLeft: "16px"
+                }}
+            >Danh sách lợi nhuận thành viên toàn cầu</h3>
+            <Card className="h-100 blur-card ms-lg-3 mb-3 mb-lg-0 text-center">
+                <Card.Body>
+                    <div style={{
+                        fontSize: "14px"
+                    }}>
+                        {recipients && recipients.length > 0 ? (
+                            recipients.map((recipient) => (
+                                <div key={recipient.id}>
+                                    {formatDate()} chúc mừng {formatName(recipient.name)} nhận {recipient.profit} €
+                                </div>
+                            ))
+                        ) : (
+                            <p>Đang cập nhật...</p>
+                        )}
+                    </div>
+                </Card.Body>
+            </Card>
+        </Container>
     );
 }
