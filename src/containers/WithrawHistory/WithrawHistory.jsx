@@ -13,14 +13,14 @@ function WithrawHistory() {
     const fetchData = () => {
         setTimeout(() => {
             setWithrawHistory([
-                { id: 1, profitOut: '80', amount: 418, status: "pending", withrawTime: "12-10-2024 12:00" },
-                { id: 2, profitOut: '200', amount: 620, status: "success", withrawTime: "10-10-2024 11:34" },
-                { id: 3, profitOut: '500', amount: 1321, status: "success", withrawTime: "05-10-2024 8:46" },
-                { id: 4, profitOut: '1000', amount: 221, status: "success", withrawTime: "04-10-2024 20:02" },
-                { id: 5, profitOut: '100', amount: 705, status: "success", withrawTime: "29-09-2024 17:32" },
-                { id: 6, profitOut: '400', amount: 498, status: "success", withrawTime: "29-09-2024 13:20" },
-                { id: 7, profitOut: '300', amount: 936, status: "success", withrawTime: "20-09-2024 12:47" },
-                { id: 8, profitOut: '600', amount: 595, status: "success", withrawTime: "12-09-2024 05:59" },
+                { id: 1, profitOut: '80', amount: 418, status: "pending", withrawTime: "12:00" },
+                { id: 2, profitOut: '200', amount: 620, status: "success", withrawTime: "11:34" },
+                { id: 3, profitOut: '500', amount: 1321, status: "success", withrawTime: "8:46" },
+                { id: 4, profitOut: '1000', amount: 221, status: "success", withrawTime: "10:02" },
+                { id: 5, profitOut: '100', amount: 705, status: "success", withrawTime: "17:32" },
+                { id: 6, profitOut: '400', amount: 498, status: "success", withrawTime: "13:20" },
+                { id: 7, profitOut: '300', amount: 936, status: "success", withrawTime: "12:47" },
+                { id: 8, profitOut: '600', amount: 595, status: "success", withrawTime: "05:59" },
             ])
         }, 1000)
     }
@@ -32,7 +32,12 @@ function WithrawHistory() {
                     withrawHistory.map((history) => {
                         return (
                             <Col xs={12} sm={6} md={4} lg={4} key={history.id}>
-                                <Card className="h-100 received-product-card">
+                                <Card className="h-100 received-product-card"
+                                    style={{
+                                        backgroundColor: '#9dcff0',
+                                        color: "black"
+                                    }}
+                                >
                                     <Card.Body>
                                         <Card.Title>
                                             <div className='mt-2' style={{ fontSize: "14px" }}>

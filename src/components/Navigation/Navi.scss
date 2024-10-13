@@ -59,10 +59,12 @@
       box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
       z-index: 20;
       transition: right 0.4s ease;
+      overflow-y: hidden;
 
       &.open {
         right: 0;
-
+        overflow-y: auto;
+        width: 400px;
       }
 
       &::before {
@@ -82,6 +84,41 @@
         overflow-y: auto;
         padding: 20px;
         background-color: transparent;
+
+        .info-card-top{
+          display: flex;
+          flex-direction: column;
+          justify-content: end;
+          align-items: end;
+          color: white;
+          margin-bottom: 20px;
+        }
+
+        .info-card-mid{
+          height: 75px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          color: white;
+          border-radius: 24px;
+          border: 1px solid #dbdfe4;
+          margin-bottom: 20px;
+
+
+          .left-card-column, .right-card-column {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+          }
+      
+          .right-card-column {
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+          }
+        }
         
         ul {
           li {
@@ -92,7 +129,7 @@
             }
             p {
               cursor: pointer;
-              padding: 10px 0;
+              padding: 10px 0 0 0;
               color: white;
               &:hover {
                 text-decoration: underline;
@@ -112,5 +149,18 @@
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 15;
     }
+  }
+
+  
+}
+
+.responsive-modal .modal-dialog {
+  max-width: 600px; /* Đặt modal tối đa 600px cho màn hình lớn */
+  width: 100%; /* Đảm bảo modal chiếm 100% chiều rộng trên màn hình nhỏ */
+}
+
+@media (max-width: 768px) {
+  .responsive-modal .modal-dialog {
+    margin: 0 10px; /* Giảm margin để modal không bị sát viền màn hình */
   }
 }
