@@ -323,6 +323,10 @@ function HotProduct({thisUser, setThisUser, userAmount, setUserAmount}) {
                         <Col md={4} className="text-end">{`${thisUser?.distributionTurn || 0}/${thisUser?.memberId?.distribution || 0}`}</Col>
                     </Row>
                     <Row>
+                        <Col md={8} className='text-start'><strong>Chiết khấu hôm qua:</strong></Col>
+                        <Col md={4} className="text-end">1.12 €</Col>
+                    </Row>
+                    <Row>
                         <Col md={8} className='text-start'><strong>Chiết khấu hôm nay:</strong></Col>
                         <Col md={4} className="text-end">{`${thisUser?.profit || 0}`} €</Col>
                     </Row>

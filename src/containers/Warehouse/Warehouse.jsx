@@ -126,7 +126,7 @@ function Warehouse() {
 
     return (
         <Container className="mt-1 py-5 warehouse-container">
-            <h4 className="text-center mb-4" style={{ color: "white" }}>Lịch sử phân phối</h4>
+            <h4 className="text-start mb-4" style={{ color: "white" }}>Lịch sử phân phối</h4>
             <Row className="g-4">
                 {savedProducts.length > 0 ? (
                     savedProducts.map((product) => {
@@ -219,7 +219,7 @@ function Warehouse() {
                         );
                     })
                 ) : (
-                    <h5 className="text-center">Chưa nhận sản phẩm nào</h5>
+                    <h5 className="text-start">Chưa nhận sản phẩm nào</h5>
                 )}
             </Row>
 

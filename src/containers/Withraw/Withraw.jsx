@@ -74,6 +74,8 @@ function Withraw() {
             verifyPassword(values.passwordBank, thisUser.password)
                 .then(async(isMatch) => {
                     if(isMatch){
+                        // Phải có thêm điều kiện lượt phân phối hôm nay phải đạt tối đa mới cho phép gọi tới reqWWithraw
+                        // if(thisUser.todayDist === thisUser.memberId.distribution)
                         const letWithraw = await reqWithdrawal(
                             thisUser._id, 
                             values.amount

@@ -23,6 +23,11 @@ const Navi = () => {
     toggleCard()
   }
 
+  const handleGoToWithrawHistory = () => {
+    navigate("/withraw-history")
+    toggleCard()
+  }
+
   const onClickLogout = () => {
     localStorage.removeItem("user_name");
     localStorage.removeItem("access_token");
@@ -42,6 +47,7 @@ const Navi = () => {
 
           {/* Navigation Links */}
           <NavLink to="/home">Trang chủ</NavLink>
+          <NavLink to="/events">Sự kiện</NavLink>
           <NavLink to="/warehouse">Kho</NavLink>
 
           {/* Profile Avatar Container */}
@@ -55,7 +61,7 @@ const Navi = () => {
               <Card className="info-card">
                 <Card.Body>
                   <ul className="list-unstyled">
-                    <li><p onClick={() => alert("Lịch sử rút tiền")}>Lịch sử rút tiền</p></li>
+                    <li><p onClick={() => handleGoToWithrawHistory()}>Lịch sử rút tiền</p></li>
                     <li><p onClick={() => handleGoToBankAccount()}>Thông tin ngân hàng</p></li>
                     <li><p onClick={() => alert("Địa chỉ")}>Địa chỉ</p></li>
                     <li><p onClick={() => alert("Chuyển đổi ngôn ngữ")}>Chuyển đổi ngôn ngữ</p></li>

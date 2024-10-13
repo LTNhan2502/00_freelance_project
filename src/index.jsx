@@ -12,6 +12,8 @@ import Register from './containers/Auth/Register';
 import Warehouse from './containers/Warehouse/Warehouse';
 import InfoBank from './containers/Bank/InfoBank';
 import Withraw from './containers/Withraw/Withraw';
+import Events from './containers/Events/Events';
+import WithrawHistory from './containers/WithrawHistory/WithrawHistory';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -39,6 +41,18 @@ root.render(
           <Route path='warehouse' element={
             <PrivateRoute>
               <Warehouse />
+            </PrivateRoute>
+          }/>
+
+          <Route path='events' element={
+            <PrivateRoute>
+              <Events />
+            </PrivateRoute>
+          }/>
+
+          <Route path='withraw-history' element={
+            <PrivateRoute>
+              <WithrawHistory />
             </PrivateRoute>
           }/>
 
